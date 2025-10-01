@@ -1,0 +1,29 @@
+<!--function exportEntriesToPDF(filenamePrefix) {
+  const table = document.getElementById("dataTable");
+  if (!table) return alert("No table available!");
+  const headers = [];
+  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
+  const body = [];
+  table.querySelectorAll("tbody tr").forEach(tr => {
+    const row = [];
+    tr.querySelectorAll("td").forEach(td => row.push(td.innerText));
+    body.push(row);
+  });
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("l", "mm", "a4");
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  pdf.setFontSize(16);
+  pdf.text("Sri Sai Makers & Engravers", pageWidth / 2, 14, { align: "center" });
+  pdf.setFontSize(10);
+  pdf.text("Painter Production Sheet Filled By Quality Checker", pageWidth / 2, 22, { align: "center" });
+  pdf.autoTable({
+    startY: 27,
+    head: [headers],
+    body: body,
+    styles: { fontSize: 8 },
+    headStyles: { fillColor: [43, 110, 163], textColor: 255 },
+    theme: "grid",
+    margin: { left: 8, right: 8 }
+  });
+  pdf.save(`PainterRecords.pdf`);
+}-->

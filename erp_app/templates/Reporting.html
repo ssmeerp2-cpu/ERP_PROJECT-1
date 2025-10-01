@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reporting Module</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #9c4aa7;
+      --purple-dark: #7f3b8b;
+      --accent-yellow: #f6c21e;
+      --btn-blue: #1f78a3;
+      --btn-orange: #f2a33c;
+      --card-border: #1080b2;
+      --header-height: 50px;
+      --radius: 6px;
+      font-family:"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #fff;
+      color: #333;
+      padding: 5px 12px;
+    }
+    .topbar {
+      background: linear-gradient(180deg, var(--purple) 0%, #8d4d91 100%);
+      color: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 9px;
+      box-sizing: border-box;
+      border: 2px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    }
+    .top-left, .top-center, .top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .top-left {
+      min-width: 260px;
+    }
+    .top-center {
+      flex: 1;
+      justify-content: center;
+    }
+    .top-right {
+      min-width: 320px;
+      justify-content: flex-end;
+    }
+    .company {
+      font-weight: 400;
+      font-size: 20px;
+      padding: 0 18px;
+      border-right: 2px solid rgba(255, 255, 255, 0.12);
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .erp-menu {
+      padding: 0 16px;
+      font-weight: 300;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+    }
+    .menu-title {
+      color: var(--accent-yellow);
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin-right: 12px;
+      height: 34px;
+    }
+    .search-box input {
+      border: 0;
+      outline: 0;
+      width: 140px;
+      font-size: 14px;
+    }
+    .search-box button {
+      border: 0;
+      background: transparent;
+      padding: 0 6px;
+      cursor: pointer;
+    }
+    .user-area {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .change-user {
+      font-size: 14px;
+      font-weight: 300;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .change-user:hover {
+      color: #ddd;
+    }
+    .panel-wrap {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+    }
+    .panel {
+      width: 65%;
+      border-radius: 0px;
+      border: 1px solid var(--card-border);
+      padding: 10px 5px;
+      min-height: 140px;
+      background: #ffffff;
+      box-shadow: 0 2px 0 rgba(16, 128, 178, 0.02);
+    }
+    .button-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 18px;
+    }
+    .btn-custom {
+      background: var(--btn-blue);
+      color: white;
+      border-radius: 4px;
+      padding: 6px 12px;
+      border: 0;
+      font-weight: 300;
+      box-shadow: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      width: 85px;   /* Fixed width */
+      height: 30px;
+    }
+    .btn-custom:hover {
+      background: #155d7a;
+      color: white;
+    }
+    .hidden {
+      display: none;
+    }
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      justify-items: center;
+      margin-bottom: 20px;
+    }
+    .small-btn {
+      background: white;
+      color: #1a7eaf;
+      border: 1px solid #889196;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      width: 100%;
+      max-width: 450px;
+      height: 35px;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-decoration: none;
+      line-height: normal;
+      flex:1;
+    }
+    .small-btn:hover {
+      color: green;
+      background: #f7f7f7;
+    }
+    .dropdown {
+      position: relative;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      min-width: 160px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      padding: 8px 0;
+      display: none;
+      z-index: 100;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 8px 16px;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .dropdown-menu a:hover {
+      background: #f2f2f2;
+    }
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+    a.small-btn {
+  text-decoration: none;
+}
+    .caret {
+      font-size: 12px;
+      line-height: 0;
+    }
+    .btn-back {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .back-btn {
+      background: var(--btn-orange);
+      color: white;
+      border-radius: 6px;
+      padding: 8px 14px;
+      border: 0;
+      font-weight: 600;
+      box-shadow: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: #c76a1e;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" role="banner">
+    <div class="top-left">
+      <div class="company">SSME71</div>
+      <div class="erp-menu">ERP Menu</div>
+    </div>
+    <div class="top-center">
+      <div class="menu-title">Reporting</div>
+    </div>
+    <div class="top-right">
+      <div class="search-box" title="Search menu">
+        <input type="search" placeholder="Menu ID" aria-label="Menu ID">
+        <button aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+      <div class="user-area">(User : store)</div>
+      <div class="change-user">Change User</div>
+    </div>
+  </header>
+  <div class="panel-wrap">
+    <div class="panel" role="main" aria-labelledby="menus">
+      <div class="button-row" id="menus">
+        <button class="btn-custom">Favorites</button>
+        <button class="btn-custom">Masters</button>
+        <button class="btn-custom">Transactions <span class="caret">▾</span></button>
+        <button class="btn-custom">Reports <span class="caret">▾</span></button>
+        <button class="btn-custom">CheckList <span class="caret">▾</span></button>
+        <button class="btn-custom">Registers <span class="caret">▾</span></button>
+        <button class="btn-custom">System</button>
+        <button class="btn-custom">Tools</button>
+        <button class="btn-custom">Posting</button>
+        <div class="dropdown">
+          <button class="btn-custom" onclick="toggleDropdown(this)">Reporting <span class="caret">▾</span></button>
+          <div class="dropdown-menu">
+            <a onclick="showSubMenu('production-submenu')">Production</a>
+            <a onclick="showSubMenu('quality-submenu')">Quality</a>
+            <a onclick="showSubMenu('moulding-submenu')">Moulding</a>
+          </div>
+        </div>
+      </div>
+      <div id="production-submenu" class="submenu hidden">
+        <div class="button-grid">
+          <a href="testing1.html" class="small-btn" tabindex="0">Painter Production Sheet</a>
+          <!--<a href="paint_mixing.html" class="small-btn" tabindex="0">Paint Mixing & Viscosity</a>-->
+          <a href="paint_stirring.html" class="small-btn" tabindex="0">Paint Stirring Sheet</a>
+          <!--<a href="painting_fixture_cleaing.html" class="small-btn" tabindex="0">Painting Fixture Cleaning Sheet</a>-->
+          <a href="buffing_production.html" class="small-btn" tabindex="0">Buffing Production Sheet</a>
+           <!--<a href="paint_receiving.html" class="small-btn" tabindex="0">Paint Receiving Sheet</a>-->
+           <!--<a href="rcq_checksheet.html" class="small-btn" tabindex="0">RQC Checksheet</a>-->
+          <a href="masking_sheet.html" class="small-btn" tabindex="0">Masking Sheet</a>
+           <!--<a href="daily_production.html" class="small-btn" tabindex="0">Daily Production Summay Sheet</a>-->
+           <!--<a href="pad_production.html" class="small-btn" tabindex="0">Pad Production Sheet</a>-->
+           <!--<a href="pcc_pad_production.html" class="small-btn" tabindex="0">PCC Pad Production Sheet</a>-->
+           <!--<a href="dispatch_vehical_loading_sheet.html" class="small-btn" tabindex="0">Dispatch Vehical Loading Sheet</a>-->
+        </div>
+      </div>
+      <div id="quality-submenu" class="submenu hidden">
+        <div class="button-grid">
+          <button class="small-btn" tabindex="0">Line Set Up Approval</button>
+          <button class="small-btn" tabindex="0">Paint Peel Off & DFT Test Sheet</button>
+          <button class="small-btn" tabindex="0">Route Card Log Book</button>
+          <button class="small-btn" tabindex="0">Patrolling Inspection Sheet</button>
+        </div>
+      </div>
+      <div id="moulding-submenu" class="submenu hidden">
+        <div class="button-grid">
+          <button class="small-btn" tabindex="0">Material Requisition Slip</button>
+          <button class="small-btn" tabindex="0">Oven Monitoring Sheet</button>
+          <button class="small-btn" tabindex="0">Process Parameter Standard</button>
+          <button class="small-btn" tabindex="0">Process Parameter Monitoring Chart</button>
+          <button class="small-btn" tabindex="0">Tool History Card</button>
+          <button class="small-btn" tabindex="0">Dainik Production Reports</button>
+          <button class="small-btn" tabindex="0">Inprocess Inspection Report</button>
+          <button class="small-btn" tabindex="0">Process Control Chart</button>
+          <button class="small-btn" tabindex="0">Machine Check Sheet 1</button>
+          <button class="small-btn" tabindex="0">Machine Check Sheet 2</button>
+        </div>
+      </div>
+      
+      <div class="btn-back">
+        <button class="back-btn" onclick="hideAllSubMenus()">Back</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+  <script>
+    function showSubMenu(id) {
+      hideAllSubMenus();
+      const submenu = document.getElementById(id);
+      if (submenu) submenu.classList.remove('hidden');
+    }
+    function hideAllSubMenus() {
+      document.querySelectorAll('.submenu').forEach(menu => menu.classList.add('hidden'));
+    }
+    function toggleDropdown(button) {
+      const dropdown = button.parentElement;
+      dropdown.classList.toggle('open');
+    }
+
+    
+    document.addEventListener('click', function (e) {
+      document.querySelectorAll('.dropdown').forEach(dropdown => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
