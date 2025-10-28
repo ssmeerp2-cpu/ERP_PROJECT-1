@@ -45,8 +45,10 @@ class BuffingEntry(models.Model):
         return f"{self.date} - {self.part_code} ({self.operator})"
 
 class MaskingEntry(models.Model):
+    department = models.CharField(max_length=100)
     date = models.DateField()
     item_description = models.CharField(max_length=200)
+    lot_qty = models.IntegerField()
     start_time = models.TimeField()
     end_time = models.TimeField()
     ok_qty_after_masking = models.IntegerField()

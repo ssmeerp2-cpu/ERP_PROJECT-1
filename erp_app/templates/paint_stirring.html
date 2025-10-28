@@ -53,8 +53,8 @@
 <body>
   <header class="topbar" role="banner">
     <div class="top-left">
-      <div class="company">SSME71</div>
-      <div class="erp-menu">ERP Menu</div>
+      <div class="company">SRI SAI</div>
+      <div class="erp-menu">Plot No- 71</div>
     </div>
     <div class="top-center"><div class="menu-title">Paint Stirring Sheet </div></div>
     <div class="top-right">
@@ -72,7 +72,7 @@
     <div class="form-grid" id="headerForm">
       <div>
         <label>Date</label>
-        <input id="hdr_date" type="date">
+        <input id="hdr_date" type="date" readonly>
       </div>
       <div>
         <label>Paint Name</label>
@@ -171,42 +171,13 @@ function updateNavInputs(){ const inputs = collectNavInputs(); inputs.forEach(in
 window.updateNavInputs = updateNavInputs;
 function readEntriesFromStorage(){ const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw) || []; } catch(e){ return []; } }
 function writeEntriesToStorage(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-saveBtn.addEventListener('click', () => {
-  const headerDate = document.getElementById('hdr_date').value;
-  if (!headerDate) { alert('Select Date in header before saving.'); return; }
-  const headerPaintName = document.getElementById('hdr_paint_name').value || '';
-  const headerPaintCode = document.getElementById('hdr_paint_code').value || '';
-  const headerBatchCode = document.getElementById('hdr_batch_code').value || '';
-  const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-  if (!rows.length) { alert('No rows to save.'); return; }
-  const toSave = [];
-  rows.forEach(r => {
-    const inputs = Array.from(r.querySelectorAll('input, select'));
-    const values = {};
-    let i = 0;
-    values['pkg_size'] = parseNumber(inputs[i++].value);
-    values['pkg_refrence'] = inputs[i++].value || '';
-    values['expiry_date'] = inputs[i++].value || '';
-    values['air_pressure'] = inputs[i++].value || '';
-    values['start_time'] = inputs[i++].value;
-    values['end_time'] = inputs[i++].value;
-    values['done_by'] = inputs[i++].value || '';
-    values['judgement'] = inputs[i++].value || '';
-    values['verify_by'] = inputs[i++].value || '';
-    values['remarks'] = inputs[i++].value || '';
-    const entry = { date: headerDate, paint_name: headerPaintName, paint_code: headerPaintCode, batch_code: headerBatchCode, ...values, savedAt: new Date().toISOString() };
-    toSave.push(entry);
-  });
-  const stored = readEntriesFromStorage(); Array.prototype.push.apply(stored, toSave); writeEntriesToStorage(stored);
-  alert(`Saved ${toSave.length} row(s).`);
-});
-function parseNumber(v){ if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
-previewBtn.addEventListener('click', () => {
-  const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-  if (!rows.length) { alert('No rows to preview'); return; }
-  const lines = [];
-  rows.forEach((r, idx) => { const inputs = Array.from(r.querySelectorAll('input, select')); const arr = inputs.map(inp => inp.value); lines.push(`${idx+1}. ${arr.join(' | ')}`); });
-  alert(lines.join('\n\n'));
+        function parseNumber(v){ if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
+        previewBtn.addEventListener('click', () => {
+          const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
+          if (!rows.length) { alert('No rows to preview'); return; }
+          const lines = [];
+          rows.forEach((r, idx) => { const inputs = Array.from(r.querySelectorAll('input, select')); const arr = inputs.map(inp => inp.value); lines.push(`${idx+1}. ${arr.join(' | ')}`); });
+          alert(lines.join('\n\n'));
 });
 async function saveAllRowsToAPI() {
     const headerDate = document.getElementById('hdr_date').value;
@@ -224,12 +195,12 @@ async function saveAllRowsToAPI() {
             paint_name: headerPaintName,
             paint_code: headerPaintCode,
             batch_code: headerBatchCode,
-            pkg_size: parseNumber(inputs[i++].value),
+            pkg_size: parseInt(inputs[i++].value),
             pkg_refrence: inputs[i++].value || '',
             expiry_date: inputs[i++].value || '',
             air_pressure: inputs[i++].value || '',
-            start_time: inputs[i++].value || null,
-            end_time: inputs[i++].value || null,
+            start_time: inputs[i++].value || '',
+            end_time: inputs[i++].value || '',
             done_by: inputs[i++].value || '',
             judgement: inputs[i++].value || '',
             verify_by: inputs[i++].value || '',
@@ -248,6 +219,8 @@ async function saveAllRowsToAPI() {
             return;
         }
     }
+    entriesContainer.innerHTML = ''; 
+    addRow();
     alert("All rows saved to server!");
 }
 saveBtn.addEventListener('click', saveAllRowsToAPI);
@@ -293,6 +266,7 @@ async function loadDataFromAPI() {
     if (!fromDate || !toDate) { alert("Please select both From and To dates"); return; }
     try {
         let res = await fetch("/api/paint-stirring-entries/");
+        if (!res.ok) throw new Error("API call failed with status: " + res.status);
         let data = await res.json();
         let filtered = data.filter(e => e.date >= fromDate && e.date <= toDate);
         document.getElementById('monthResult').innerHTML = buildTableHtml(filtered);
@@ -318,12 +292,6 @@ exportPDFBtn.addEventListener('click', () => {
   if (!entries.length) { alert('No records in range'); return; }
   exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
 });
-/* Month exports */
-document.getElementById('exportMonthExcel').addEventListener('click', function(){ const m = document.getElementById('monthPicker').value; if (!m) { alert('Pick a month first'); return; } const entries = readEntriesFromStorage().filter(e => e.date && e.date.slice(0,7) === m); if (!entries.length) { alert('No records for this month'); return; } exportEntriesToExcel(entries, m); });
-document.getElementById('exportMonthPDF').addEventListener('click', function(){ const m = document.getElementById('monthPicker').value; if (!m) { alert('Pick a month first'); return; } const entries = readEntriesFromStorage().filter(e => e.date && e.date.slice(0,7) === m); if (!entries.length) { alert('No records for this month'); return; } exportEntriesToPDF(entries, m); });
-/* delete/clear */
-function deleteEntry(savedAt){ if (!confirm('Delete this single entry?')) return; const remaining = readEntriesFromStorage().filter(e => e.savedAt !== savedAt); writeEntriesToStorage(remaining); alert('Deleted'); document.getElementById('monthResult').innerHTML = '<div class="small">Entry deleted. Reload range to refresh.</div>'; }
-document.getElementById('clearAllData').addEventListener('click', function(){ if (!confirm('Delete ALL saved records from this browser? This cannot be undone.')) return; localStorage.removeItem(STORAGE_KEY); document.getElementById('monthResult').innerHTML = '<div class="small">All records removed.</div>'; });
 function exportEntriesToExcel(entries, filenamePrefix) {
   const aoa = [];
   aoa.push(["Sri Sai Markers & Engravers"]);
@@ -386,8 +354,21 @@ function exportEntriesToPDF(filenamePrefix) {
 };
 }
 function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-/* init */
-(function init(){ const now = new Date(); const mm = now.toISOString().slice(0,7); const monthPicker = document.getElementById('monthPicker'); if (monthPicker) monthPicker.value = mm; const from = new Date(now.getFullYear(), now.getMonth(), 1); const to = new Date(now.getFullYear(), now.getMonth()+1, 0); document.getElementById('fromDate').value = from.toISOString().slice(0,10); document.getElementById('toDate').value = to.toISOString().slice(0,10); updateNavInputs(); })();
+(function init(){ 
+ const now = new Date(); 
+ const today = now.toISOString().slice(0,10);
+ const hdrDateEl = document.getElementById('hdr_date');
+ if (hdrDateEl) hdrDateEl.value = today; 
+ const mm = today.slice(0,7);
+ const monthPicker = document.getElementById('monthPicker'); 
+ if (monthPicker) monthPicker.value = mm; 
+ const from = new Date(now.getFullYear(), now.getMonth(), 1); 
+ const to = new Date(now.getFullYear(), now.getMonth()+1, 0); 
+ document.getElementById('fromDate').value = from.toISOString().slice(0,10); 
+ document.getElementById('toDate').value = to.toISOString().slice(0,10); 
+ //try { getLocation(); } catch(e){ console.warn('getLocation() failed to start', e); }
+ updateNavInputs(); 
+})();
 </script>
 </body>
 </html>

@@ -53,8 +53,8 @@
 <body>
   <header class="topbar" role="banner">
     <div class="top-left">
-      <div class="company">SSME71</div>
-      <div class="erp-menu">ERP Menu</div>
+      <div class="company">SRI SAI</div>
+      <div class="erp-menu">Plot No- 71</div>
     </div>
     <div class="top-center"><div class="menu-title">Buffing Production</div></div>
     <div class="top-right">
@@ -72,7 +72,7 @@
     <div class="form-grid" id="headerForm">
       <div>
         <label>Date</label>
-        <input id="hdr_date" type="date">
+        <input id="hdr_date" type="date" readonly>
       </div>
       <div>
         <label>Part Code</label>
@@ -214,7 +214,6 @@ function buildTableHtml(entries){
   ];
   heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
   html += '</tr></thead><tbody>';
-  
   entries.forEach(en => {
     html += '<tr>';
     const row = [
@@ -231,7 +230,6 @@ function buildTableHtml(entries){
     ];
     row.forEach(c => html += `<td>${escapeHtml(c)}</td>`);
   });
-
   html += '</tbody></table>';
   return html;
 }
@@ -266,12 +264,6 @@ exportPDFBtn.addEventListener('click', () => {
   if (!entries.length) { alert('No records in range'); return; }
   exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
 });
-/* Month exports */
-document.getElementById('exportMonthExcel').addEventListener('click', function(){ const m = document.getElementById('monthPicker').value; if (!m) { alert('Pick a month first'); return; } const entries = readEntriesFromStorage().filter(e => e.date && e.date.slice(0,7) === m); if (!entries.length) { alert('No records for this month'); return; } exportEntriesToExcel(entries, m); });
-document.getElementById('exportMonthPDF').addEventListener('click', function(){ const m = document.getElementById('monthPicker').value; if (!m) { alert('Pick a month first'); return; } const entries = readEntriesFromStorage().filter(e => e.date && e.date.slice(0,7) === m); if (!entries.length) { alert('No records for this month'); return; } exportEntriesToPDF(entries, m); });
-/* delete/clear */
-function deleteEntry(savedAt){ if (!confirm('Delete this single entry?')) return; const remaining = readEntriesFromStorage().filter(e => e.savedAt !== savedAt); writeEntriesToStorage(remaining); alert('Deleted'); document.getElementById('monthResult').innerHTML = '<div class="small">Entry deleted. Reload range to refresh.</div>'; }
-document.getElementById('clearAllData').addEventListener('click', function(){ if (!confirm('Delete ALL saved records from this browser? This cannot be undone.')) return; localStorage.removeItem(STORAGE_KEY); document.getElementById('monthResult').innerHTML = '<div class="small">All records removed.</div>'; });
 function exportEntriesToExcel(entries, filenamePrefix) {
   const aoa = [];
   aoa.push(["Sri Sai Markers & Engravers"]);
@@ -316,7 +308,7 @@ function exportEntriesToPDF(filenamePrefix) {
     const imgHeight = 18;
     const imgX = boxX + 5;
     const imgY = boxY + 5;
-    pdf.addImage(logo, "PNG", imgX, imgY, imgWidth, imgHeight);
+  pdf.addImage(logo, "PNG", imgX, imgY, imgWidth, imgHeight);
   pdf.setFontSize(16);
   pdf.text("Sri Sai Markers & Engravers", pageWidth / 2, boxY + 10, { align: "center" });
   pdf.setFontSize(10);
@@ -334,8 +326,21 @@ function exportEntriesToPDF(filenamePrefix) {
 };
 }
 function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-/* init */
-(function init(){ const now = new Date(); const mm = now.toISOString().slice(0,7); const monthPicker = document.getElementById('monthPicker'); if (monthPicker) monthPicker.value = mm; const from = new Date(now.getFullYear(), now.getMonth(), 1); const to = new Date(now.getFullYear(), now.getMonth()+1, 0); document.getElementById('fromDate').value = from.toISOString().slice(0,10); document.getElementById('toDate').value = to.toISOString().slice(0,10); updateNavInputs(); })();
+(function init(){ 
+ const now = new Date(); 
+ const today = now.toISOString().slice(0,10);
+ const hdrDateEl = document.getElementById('hdr_date');
+ if (hdrDateEl) hdrDateEl.value = today; 
+ const mm = today.slice(0,7);
+ const monthPicker = document.getElementById('monthPicker'); 
+ if (monthPicker) monthPicker.value = mm; 
+ const from = new Date(now.getFullYear(), now.getMonth(), 1); 
+ const to = new Date(now.getFullYear(), now.getMonth()+1, 0); 
+ document.getElementById('fromDate').value = from.toISOString().slice(0,10); 
+ document.getElementById('toDate').value = to.toISOString().slice(0,10); 
+ //try { getLocation(); } catch(e){ console.warn('getLocation() failed to start', e); }
+ updateNavInputs(); 
+})();
 </script>
 </body>
 </html>

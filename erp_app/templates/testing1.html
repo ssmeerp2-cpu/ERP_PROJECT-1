@@ -1,439 +1,643 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Painter Production Sheet — Fixed</title>
-<!-- icons & libs -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<style>
-  :root{ --blue:#2b6ea3; --muted:#6d6d6d; --bg:#f4f6f8; --panel:#fff; }
-  body{ font-family:Segoe UI, Arial, sans-serif; background:var(--bg); margin:18px; color:#222; }
-  :root {--purple: #9c4aa7;--purple-dark: #7f3b8b;--accent-yellow: #f6c21e;--btn-blue: #1f78a3;--btn-orange: #f2a33c;--card-border: #1080b2;--header-height: 50px;--radius: 6px;font-family:"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;}
-  body {margin: 0;background: #fff;color: #333;padding: 5px 12px;}
-  .topbar {background: linear-gradient(180deg, var(--purple) 0%, #8d4d91 100%);color: white;border-radius: 6px;display: flex;align-items: center;height: var(--header-height);padding: 0 9px;box-sizing: border-box;border: 2px solid rgba(0, 0, 0, 0.05);box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);}
-  .top-left, .top-center, .top-right {display: flex;align-items: center;gap: 12px;}
-  .top-left {min-width: 260px;}
-  .top-center {flex: 1;justify-content: center;}
-  .top-right {min-width: 320px;justify-content: flex-end;}
-  .company {font-weight: 400;font-size: 20px;padding: 0 18px;border-right: 2px solid rgba(255, 255, 255, 0.12);height: 100%;display: flex;align-items: center;}
-  .erp-menu {padding: 0 16px;font-weight: 300;height: 100%;display: flex;align-items: center;margin-left: 8px;}
-  .menu-title {color: var(--accent-yellow);font-size: 22px;font-weight: 500;letter-spacing: 0.6px;}
-  .search-box {display: flex;align-items: center;background: rgba(255, 255, 255, 0.95);padding: 6px 8px;border-radius: 4px;margin-right: 12px;height: 34px;}
-  .search-box input {border: 0;outline: 0;width: 140px;font-size: 14px;}
-  .search-box button {border: 0;background: transparent;padding: 0 6px;cursor: pointer;}
-  .user-area {font-size: 14px;font-weight: 500;}
-  .change-user {font-size: 14px;font-weight: 300;text-decoration: underline;cursor: pointer;}
-  .change-user:hover {color: #ddd;}
-  .wrap{ max-width:1200px; margin:10px auto; }
-  .panel{ background:var(--panel); border:2px solid var(--blue); border-radius:8px; padding:14px; box-sizing:border-box; width:100%; margin-bottom:16px; }
-  h2{ margin:4px 0 12px 0; color:var(--blue); }
-  .form-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:12px; }
-  label{ display:block; font-weight:700; color:var(--blue); font-size:13px; margin-bottom:6px; }
-  input[type="text"], input[type="date"], input[type="number"], select { padding:8px 10px; border-radius:6px; border:1px solid #cfcfcf; width:100%; box-sizing:border-box; }
-  textarea{ width:100%; padding:8px; border-radius:6px; border:1px solid #cfcfcf; box-sizing:border-box; resize:vertical; }
-  .controls{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center; }
-  .btn{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:700; border:0; }
-  .btn.primary{ background:var(--blue); color:white; } .btn.warn{ background:#e55353; color:white; } .btn.ghost{ background:white; border:1px solid var(--blue); color:var(--blue); }
-  .small{ font-size:13px; color:var(--muted); }
-  #entriesContainer{ margin-top:12px; border:1px dashed #dbeaf5; padding:10px; border-radius:6px; background:#fbfdff; max-height:420px; overflow:auto; }
-  .entry-row{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-  .entry-row input, .entry-row select { padding:6px; font-size:13px; }
-  .very-small { width:200px; } .small { width:260px; }
-  table{ width:100%; border-collapse:collapse; margin-top:12px; }
-  th, td{ border:1px solid #e1eefb; padding:8px; text-align:left; font-size:13px; vertical-align:middle; }
-  th{ background:#f4fbff; color:var(--blue); font-weight:800; }
-  @media (max-width:980px){ .form-grid{ grid-template-columns: repeat(2, 1fr); } .entry-row{ flex-wrap:wrap; } }
-  @media (max-width:600px){ .form-grid{ grid-template-columns: 1fr; } .entry-row{ flex-direction:column; align-items:stretch; } }
-</style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Painter Production Sheet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {--blue: #2b6ea3;--muted: #6d6d6d;--bg: #f4f6f8;--panel: #fff;}
+        body {font-family: Segoe UI, Arial, sans-serif;background: var(--bg);margin: 18px;color: #222;}
+        :root {--purple: #9c4aa7;--purple-dark: #7f3b8b;--accent-yellow: #f6c21e;--btn-blue: #1f78a3;--btn-orange: #f2a33c;--card-border: #1080b2;--header-height: 50px;--radius: 6px;font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;}
+        body {margin: 0;background: #fff;color: #333;padding: 5px 12px;}
+        .topbar {background: linear-gradient(180deg, var(--purple) 0%, #8d4d91 100%);color: white;border-radius: 6px;display: flex;align-items: center;height: var(--header-height);padding: 0 9px;box-sizing: border-box;border: 2px solid rgba(0, 0, 0, 0.05);box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);}
+        .top-left, .top-center, .top-right {display: flex;align-items: center;gap: 12px;}
+        .top-left {min-width: 260px;}
+        .top-center {flex: 1;justify-content: center;}
+        .top-right {min-width: 320px;justify-content: flex-end;}
+        .company {font-weight: 400;font-size: 20px;padding: 0 18px;border-right: 2px solid rgba(255, 255, 255, 0.12);height: 100%;display: flex;align-items: center;}
+        .erp-menu {padding: 0 16px;font-weight: 300;height: 100%;display: flex;align-items: center;margin-left: 8px;}
+        .menu-title {color: var(--accent-yellow);font-size: 22px;font-weight: 500;letter-spacing: 0.6px;}
+        .search-box {display: flex;align-items: center;background: rgba(255, 255, 255, 0.95);padding: 6px 8px;border-radius: 4px;margin-right: 12px;height: 34px;}
+        .search-box input {border: 0;outline: 0;width: 140px;font-size: 14px;}
+        .search-box button {border: 0;background: transparent;padding: 0 6px;cursor: pointer;}
+        .user-area {font-size: 14px;font-weight: 500;}
+        .change-user {font-size: 14px;font-weight: 300;text-decoration: underline;cursor: pointer;}
+        .change-user:hover {color: #ddd;}
+        .wrap {max-width: 1200px;margin: 10px auto;}
+        .panel {background: var(--panel);border: 2px solid var(--blue);border-radius: 8px;padding: 14px;box-sizing: border-box;width: 100%;margin-bottom: 16px;}
+        h2 {margin: 4px 0 12px 0;color: var(--blue);}
+        .form-grid {display: grid;grid-template-columns: repeat(4, 1fr);gap: 10px;margin-bottom: 12px;}
+        label {display: block;font-weight: 700;color: var(--blue);font-size: 13px;margin-bottom: 6px;}
+        input[type="text"], input[type="date"], input[type="number"], select {padding: 8px 10px;border-radius: 6px;border: 1px solid #cfcfcf;width: 100%;box-sizing: border-box;}
+        textarea {width: 100%;padding: 8px;border-radius: 6px;border: 1px solid #cfcfcf;box-sizing: border-box;resize: vertical;}
+        .controls {display: flex;gap: 10px;margin-top: 10px;flex-wrap: wrap;align-items: center;}
+        .btn {display: inline-flex;gap: 8px;align-items: center;padding: 8px 12px;border-radius: 6px;cursor: pointer;font-weight: 700;border: 0;}
+        .btn.primary {background: var(--blue);color: white;}
+        .btn.warn {background: #e55353;color: white;}
+        .btn.ghost {background: white;border: 1px solid var(--blue);color: var(--blue);}
+        .small {font-size: 13px;color: var(--muted);}
+        #entriesContainer {margin-top: 12px;border: 1px dashed #dbeaf5;padding: 10px;border-radius: 6px;background: #fbfdff;max-height: 420px;overflow: auto;}
+        .entry-row {display: flex;gap: 8px;align-items: center;margin-bottom: 8px;}
+        .entry-row input, .entry-row select {padding: 6px;font-size: 13px;}
+        .very-small {width: 200px;}
+        .small {width: 260px;}
+        table {width: 100%;border-collapse: collapse; margin-top: 12px;}
+        th,td {border: 1px solid #e1eefb;padding: 8px;text-align: left;font-size: 13px;vertical-align: middle;}
+        th {background: #f4fbff;color: var(--blue);font-weight: 800;}
+        .entry-row {flex-direction: column;align-items: stretch;}
+        #pdfTemplate {display: none;}
+        #formContainer {width: 100%;}
+        #formContainer header {display: flex;justify-content: space-between;align-items: center;border-bottom: 2px solid #000;padding-bottom: 5px;margin-bottom: 5px;}
+        .header-left {display: flex;align-items: center;}
+        .logo-placeholder img {border: 1px solid #000;}
+        #formContainer h1, #formContainer h2 {margin: 0;padding-left: 10px;font-size: 14px;font-weight: bold;}
+        #formContainer h2 {font-size: 10px;font-weight: normal;}
+        .header-right {font-size: 8px;text-align: right;line-height: 1.2;}
+        #productionSheet {table-layout: fixed;width: 100%;}
+        #productionSheet th, #productionSheet td {border: 1px solid #000;padding: 2px 4px;font-size: 8px;text-align: center;vertical-align: middle;}
+        #productionSheet thead td { font-weight: bold;background-color: #f0f0f0;}
+        .rev-history-header td, .rev-history td {padding: 0;border: none !important;}
+        .rev-history-header table, .rev-history table {width: 100%;border-collapse: collapse;}
+        .rev-history-header table th, .rev-history-header table td,
+        .rev-history table th, .rev-history table td {font-size: 7px !important;border: 1px solid #000 !important;padding: 2px;text-align: center;vertical-align: middle;}
+    </style>
 </head>
 <body>
-  <header class="topbar" role="banner">
-    <div class="top-left">
-      <div class="company">SSME71</div>
-      <div class="erp-menu">ERP Menu</div>
+    <header class="topbar" role="banner">
+        <div class="top-left">
+            <div class="company">SRI SAI</div>
+            <div class="erp-menu" id="displayLocation">Fetching Location...</div>
+        </div>
+        <div class="top-center"><div class="menu-title">Painter Production</div></div>
+        <div class="top-right">
+            <div class="search-box" title="Search menu">
+                <input id="menuSearch" type="search" placeholder="Search" aria-label="Menu search">
+                <button id="menuSearchBtn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="user-area">(User : store)</div>
+            <div class="change-user">Change User</div>
+        </div>
+    </header>
+    <div class="wrap">
+        <div class="panel" id="entryPanel">
+            <h2>Painter — Daily Entries</h2>
+            <div style="font-weight:700; color:var(--blue); margin-bottom:8px;">Header</div>
+            <div class="form-grid" id="headerForm">
+                <div>
+                    <label>Painter Name</label>
+                    <input id="hdr_painter" type="text" placeholder="Painter name">
+                </div>
+                <div>
+                    <label>Date</label>
+                    <input id="hdr_date" type="date" readonly>
+                </div>
+                <div>
+                    <label>Part No</label>
+                    <input id="hdr_part" type="text" placeholder="Part No">
+                </div>
+                <div>
+                    <label>GRN No</label>
+                    <input id="hdr_grn" type="text" placeholder="GRN No">
+                </div>
+            </div>
+            <input id="hdr_location" type="hidden">
+            <div class="controls" style="margin-top:8px;">
+                <button class="btn ghost" id="addRowBtn"><i class="fa-solid fa-plus"></i> Add Row</button>
+                <button class="btn ghost" id="clearRowsBtn"><i class="fa-solid fa-trash"></i> Clear Rows</button>
+                <div style="flex:1"></div>
+                <button class="btn primary" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Save All Rows</button>
+                <button class="btn ghost" id="previewBtn"><i class="fa-regular fa-eye"></i> Preview</button>
+            </div>
+            <div id="entriesContainer" aria-live="polite"></div>
+        </div>
+        <div class="panel" style="margin-top:16px;">
+            <h2>Month View — Review & Export</h2>
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <label style="font-weight:700; color:var(--blue);">From:</label>
+                <input type="date" id="fromDate"/>
+                <label style="font-weight:700; color:var(--blue);">To:</label>
+                <input type="date" id="toDate"/>
+                <button class="btn ghost" id="loadBtn">Load Data</button>
+                <button class="btn ghost" id="exportExcel">Export Excel</button>
+                <button class="btn ghost" id="exportPDF">Export PDF</button>
+                <div style="flex:1"></div>
+            </div>
+            <div id="monthResult" style="overflow-x:auto; max-width:100%; margin-top:12px;">
+                <div class="small">No month loaded.</div>
+            </div>
+        </div>
+        <!--PDF TABLE -->
+        <div id="pdfTemplate" style="display: none;">
+    <div class="form-container" id="formContainer">
+        <header>
+            <div class="header-left">
+                <div class="logo-placeholder">
+                    <img src="/static/logo.png" alt="Company Logo" style="height: 58px; width: 58px; vertical-align: middle;">
+                </div>
+                <h1>SRI SAI MARKERS & ENGRAVERS</h1>
+                <h2>PAINTER PRODUCTION SHEET</h2>
+            </div>
+            <div class="header-right">
+                <p>Format No:- F-SSME-58</p>
+                <p>Revision No:- 10</p>
+                <p>Issue Date:- 17.11.2017</p>
+                <p>Rev Date:- 31.03.2023</p>
+                <p>Responsibility:- Quality Checker</p>
+            </div>
+        </header>
+        
+        <table class="production-sheet" id="productionSheet">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                    <td rowspan="2">Date</td>
+                    <td rowspan="2">Painter Name</td>
+                    <td rowspan="2">Part No</td>
+                    <td rowspan="2">GRN No.</td>
+                    <td rowspan="2">Lot Qty</td>
+                    <td rowspan="2">Total OK</td>
+                    <td rowspan="2">Moulding/ 
+                        Chemical</td> 
+                    <td colspan="5" class="repairable-section">Repairable Qty. <sup>7</sup></td>
+                    <td rowspan="2">Repair OK Qty.</td>
+                    <td rowspan="2">Rework person <sup>8</sup></td>
+                    <td rowspan="2">Painter Sign</td>
+                    <td colspan="6" class="rejection-section">Rejection</td>
+                    <td rowspan="2">Quality Checker Sign (OK/NG)</td>
+                    <td rowspan="2">Judgement</td>
+                    <td rowspan="2">Quality Line Leader Sign</td>
+                </tr>
+                <tr>
+                    <td>Dust</td>
+                    <td>Scratch</td>
+                    <td>Less Paint</td>
+                    <td>Colour, Finish NG</td>
+                    <td>Light Pts</td>
+                    <td>Dust</td>
+                    <td>Scratch</td>
+                    <td>Dent</td>
+                    <td>Less Paint</td>
+                    <td>Cut mark</td>
+                    <td>Part Flow</td>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+        </div>
+    
+    <div id="revisionHistoryTemplate" style="display: none;">
+        <table id="revisionTableTemplate">
+            <tbody>
+                <tr class="rev-history-header">
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>Rev. No.</td><td>Amendment</td><td>Rev. Date</td><td>Prepared By</td><td>Approved By</td></tr>
+                        </table>
+                    </td>
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>Rev.</td><td>Amendment</td><td>Rev. Date</td><td>Prepared By</td><td>Approved By</td></tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="rev-history">
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>07</td><td class="amendment-cell">Add reparable defects</td><td>07.12.2021</td><td>chandni</td><td>Deepak</td></tr>
+                        </table>
+                    </td>
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>09</td><td class="amendment-cell">Change Format number</td><td>08.07.2022</td><td>chandni</td><td>Deepak Verma</td></tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="rev-history">
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>08</td><td class="amendment-cell">Add Rework emery person name</td><td>08.02.2022</td><td>chandni</td><td>Deepak</td></tr>
+                        </table>
+                    </td>
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>10</td><td class="amendment-cell">Update the review the format</td><td>31.03.2023</td><td>Vikramjeet</td><td>Deepak Verma</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="top-center"><div class="menu-title">Painter Production</div></div>
-    <div class="top-right">
-      <div class="search-box" title="Search menu">
-        <input id="menuSearch" type="search" placeholder="Search" aria-label="Menu search">
-        <button id="menuSearchBtn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
-      </div>
-      <div class="user-area">(User : store)</div>
-      <div class="change-user">Change User</div>
     </div>
-  </header>
-<div class="wrap">
-  <div class="panel" id="entryPanel">
-    <h2>Painter — Daily Entries</h2>
-    <div style="font-weight:700; color:var(--blue); margin-bottom:8px;">Header</div>
-    <div class="form-grid" id="headerForm">
-      <div>
-        <label>Painter Name</label>
-        <input id="hdr_painter" type="text" placeholder="Painter name">
-      </div>
-      <div>
-        <label>Date</label>
-        <input id="hdr_date" type="date">
-      </div>
-      <div>
-        <label>Part No</label>
-        <input id="hdr_part" type="text" placeholder="Part No">
-      </div>
-      <div>
-        <label>GRN No</label>
-        <input id="hdr_grn" type="text" placeholder="GRN No">
-      </div>
     </div>
-    <div class="controls" style="margin-top:8px;">
-      <button class="btn ghost" id="addRowBtn"><i class="fa-solid fa-plus"></i> Add Row</button>
-      <button class="btn ghost" id="clearRowsBtn"><i class="fa-solid fa-trash"></i> Clear Rows</button>
-      <div style="flex:1"></div>
-      <button class="btn primary" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Save All Rows</button>
-      <button class="btn ghost" id="previewBtn"><i class="fa-regular fa-eye"></i> Preview</button>
-    </div>
-    <div id="entriesContainer" aria-live="polite"></div>
-  </div>
-  <div class="panel" style="margin-top:16px;">
-    <h2>Month View — Review & Export</h2>
-    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-      <label style="font-weight:700; color:var(--blue);">From:</label>
-      <input type="date" id="fromDate" />
-      <label style="font-weight:700; color:var(--blue);">To:</label>
-      <input type="date" id="toDate" />
-      <button class="btn ghost" id="loadBtn">Load Data</button>
-      <button class="btn ghost" id="exportExcel">Export Excel</button>
-      <button class="btn ghost" id="exportPDF">Export PDF</button>
-      <div style="flex:1"></div>
-    </div>
-    <div id="monthResult" style="overflow-x:auto; max-width:100%; margin-top:12px;">
-      <div class="small">No month loaded.</div>
-    </div>
-  </div>
-</div>
-<script>
-const STORAGE_KEY = 'painter_records_v2_fixed';
-const entriesContainer = document.getElementById('entriesContainer');
-const addRowBtn = document.getElementById('addRowBtn');
-const clearRowsBtn = document.getElementById('clearRowsBtn');
-const saveBtn = document.getElementById('saveBtn');
-const previewBtn = document.getElementById('previewBtn');
-const loadBtn = document.getElementById('loadBtn');
-const exportExcelBtn = document.getElementById('exportExcel');
-const exportPDFBtn = document.getElementById('exportPDF');
-const menuSearch = document.getElementById('menuSearch');
-const menuSearchBtn = document.getElementById('menuSearchBtn');
-const rowColumns = [
-  'lot_qty','total_ok','moulding_chemical',
-  'rep_dust','rep_scratch','rep_less_paint','rep_colour_fin','rep_light_pass','rep_ok_qty',
-  'rework_person','painter_sign',
-  'rej_dust','rej_scratch','rej_dent','rej_less_paint','rej_cut_mark','rej_paint_flow',
-  'qc_sign','judgement','line_leader'
-];
-function makeInput(type, cls, value, placeholder, options){
-  let el;
-  if (type === 'select'){
-    el = document.createElement('select');
-    (options||[]).forEach(opt => { const o = document.createElement('option'); o.value = opt.value; o.text = opt.label; el.appendChild(o); });
-    el.value = value || '';
-  } else {
-    el = document.createElement('input'); el.type = type || 'text'; if (value !== undefined && value !== null) el.value = value; if (placeholder) el.placeholder = placeholder;
-  }
-  if (cls) el.classList.add(cls);
-  el.addEventListener('keydown', navKeyHandler);
-  return el;
-}
-function createRowElement(prefill = {}){
-  const row = document.createElement('div'); row.className = 'entry-row';
-  row.appendChild(makeInput('number','very-small', prefill['lot_qty'] ?? '', 'Lot Qty'));
-  row.appendChild(makeInput('number','very-small', prefill['total_ok'] ?? '', 'Total Ok'));
-  row.appendChild(makeInput('number','very-small', prefill['moulding_chemical'] ?? '', 'M/C'));
-  row.appendChild(makeInput('number','very-small', prefill['rep_dust'] ?? '', 'Rep Dust'));
-  row.appendChild(makeInput('number','very-small', prefill['rep_scratch'] ?? '', 'Rep Scratch'));
-  row.appendChild(makeInput('number','very-small', prefill['rep_less_paint'] ?? '', 'Rep Less'));
-  row.appendChild(makeInput('number','very-small', prefill['rep_colour_fin'] ?? '', 'Rep Colour'));
-  row.appendChild(makeInput('number','very-small', prefill['rep_light_pass'] ?? '', 'Rep Light'));
-  row.appendChild(makeInput('number','very-small', prefill['rep_ok_qty'] ?? '', 'Rep OK'));
-  row.appendChild(makeInput('text','small', prefill['rework_person'] ?? '', 'Rework'));
-  row.appendChild(makeInput('text','small', prefill['painter_sign'] ?? '', 'Painter'));
-  row.appendChild(makeInput('number','very-small', prefill['rej_dust'] ?? '', 'Rej Dust'));
-  row.appendChild(makeInput('number','very-small', prefill['rej_scratch'] ?? '', 'Rej Scratch'));
-  row.appendChild(makeInput('number','very-small', prefill['rej_dent'] ?? '', 'Rej Dent'));
-  row.appendChild(makeInput('number','very-small', prefill['rej_less_paint'] ?? '', 'Rej Less'));
-  row.appendChild(makeInput('number','very-small', prefill['rej_cut_mark'] ?? '', 'Rej Cut'));
-  row.appendChild(makeInput('number','very-small', prefill['rej_paint_flow'] ?? '', 'Rej Flow'));
-  row.appendChild(makeInput('text','small', prefill['qc_sign'] ?? '', 'QC'));
-  const sel = makeInput('select','small', prefill['judgement'] ?? '', 'judgement', [{value:'',label:''},{value:'OK',label:'OK'},{value:'NG',label:'NG'}]);
-  row.appendChild(sel);
-  row.appendChild(makeInput('text','small', prefill['line_leader'] ?? '', 'Leader'));
-  const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.className='btn warn action-btn'; delBtn.title='Remove row'; delBtn.innerHTML='<i class="fa-solid fa-trash"></i>';
-  delBtn.addEventListener('click', () => { row.remove(); updateNavInputs(); });
-  row.appendChild(delBtn);
-  return row;
-}
-function addRow(prefill = {}){ const el = createRowElement(prefill); entriesContainer.appendChild(el); updateNavInputs(); const inputs = el.querySelectorAll('input, select'); if (inputs[0]) inputs[0].focus(); }
-addRow();
-addRowBtn.addEventListener('click', () => addRow());
-clearRowsBtn.addEventListener('click', () => { if (!confirm('Clear all entry rows?')) return; entriesContainer.innerHTML = ''; addRow(); });
-function collectNavInputs(){ return Array.from(entriesContainer.querySelectorAll('input, select')); }
-function navKeyHandler(e){ const inputs = collectNavInputs(); const idx = inputs.indexOf(e.target); if (e.key === 'ArrowRight'){ e.preventDefault(); if (idx>=0 && idx < inputs.length-1) inputs[idx+1].focus(); } else if (e.key === 'ArrowLeft'){ e.preventDefault(); if (idx>0) inputs[idx-1].focus(); } else if (e.key === 'Enter'){ e.preventDefault(); if (idx>=0 && idx < inputs.length-1) inputs[idx+1].focus(); } }
-function updateNavInputs(){ const inputs = collectNavInputs(); inputs.forEach(inp => { inp.removeEventListener('keydown', navKeyHandler); inp.addEventListener('keydown', navKeyHandler); }); }
-window.updateNavInputs = updateNavInputs;
-function readEntriesFromStorage(){ const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw) || []; } catch(e){ return []; } }
-function writeEntriesToStorage(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-saveBtn.addEventListener('click', () => {
-  const headerDate = document.getElementById('hdr_date').value;
-  if (!headerDate) { alert('Select Date in header before saving.'); return; }
-  const headerPainter = document.getElementById('hdr_painter').value || '';
-  const headerPart = document.getElementById('hdr_part').value || '';
-  const headerGrn = document.getElementById('hdr_grn').value || '';
-  const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-  if (!rows.length) { alert('No rows to save.'); return; }
-  const toSave = [];
-  rows.forEach(r => {
-    const inputs = Array.from(r.querySelectorAll('input, select'));
-    const values = {};
-    let i = 0;
-    values['lot_qty'] = parseNumber(inputs[i++].value);
-    values['total_ok'] = parseNumber(inputs[i++].value);
-    values['moulding_chemical'] = parseNumber(inputs[i++].value);
-    values['rep_dust'] = parseNumber(inputs[i++].value);
-    values['rep_scratch'] = parseNumber(inputs[i++].value);
-    values['rep_less_paint'] = parseNumber(inputs[i++].value);
-    values['rep_colour_fin'] = parseNumber(inputs[i++].value);
-    values['rep_light_pass'] = parseNumber(inputs[i++].value);
-    values['rep_ok_qty'] = parseNumber(inputs[i++].value);
-    values['rework_person'] = inputs[i++].value || '';
-    values['painter_sign'] = inputs[i++].value || '';
-    values['rej_dust'] = parseNumber(inputs[i++].value);
-    values['rej_scratch'] = parseNumber(inputs[i++].value);
-    values['rej_dent'] = parseNumber(inputs[i++].value);
-    values['rej_less_paint'] = parseNumber(inputs[i++].value);
-    values['rej_cut_mark'] = parseNumber(inputs[i++].value);
-    values['rej_paint_flow'] = parseNumber(inputs[i++].value);
-    values['qc_sign'] = inputs[i++].value || '';
-    values['judgement'] = inputs[i++].value || '';
-    values['line_leader'] = inputs[i++].value || '';
-    const entry = { date: headerDate, painter: headerPainter, part: headerPart, grn: headerGrn, ...values, savedAt: new Date().toISOString() };
-    toSave.push(entry);
-  });
-  const stored = readEntriesFromStorage(); Array.prototype.push.apply(stored, toSave); writeEntriesToStorage(stored);
-  alert(`Saved ${toSave.length} row(s).`);
-});
-function parseNumber(v){ if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
-previewBtn.addEventListener('click', () => {
-  const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-  if (!rows.length) { alert('No rows to preview'); return; }
-  const lines = [];
-  rows.forEach((r, idx) => { const inputs = Array.from(r.querySelectorAll('input, select')); const arr = inputs.map(inp => inp.value); lines.push(`${idx+1}. ${arr.join(' | ')}`); });
-  alert(lines.join('\n\n'));
-});
-async function saveAllRowsToAPI() {
-    const headerDate = document.getElementById('hdr_date').value;
-    if (!headerDate) { alert('Select Date in header before saving.'); return; }
-    const headerPainter = document.getElementById('hdr_painter').value || '';
-    const headerPart = document.getElementById('hdr_part').value || '';
-    const headerGrn = document.getElementById('hdr_grn').value || '';
-    const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-    if (!rows.length) { alert('No rows to save.'); return; }
-    for (let r of rows) {
-        const inputs = Array.from(r.querySelectorAll('input, select'));
-        let i = 0;
-        const payload = {
-            painter_name: headerPainter,
-            date: headerDate,
-            part_no: headerPart,
-            grn_no: headerGrn,
-            lot_qty: parseInt(inputs[i++].value) || null,
-            total_ok: parseInt(inputs[i++].value) || null,
-            moulding_chemical: parseInt(inputs[i++].value) || null,
-            rep_dust: parseInt(inputs[i++].value) || null,
-            rep_scratch: parseInt(inputs[i++].value) || null,
-            rep_less_paint: parseInt(inputs[i++].value) || null,
-            rep_colour_fin: parseInt(inputs[i++].value) || null,
-            rep_light_pass: parseInt(inputs[i++].value) || null,
-            rep_ok_qty: parseInt(inputs[i++].value) || null,
-            rework_person: inputs[i++].value || null,
-            painter_sign: inputs[i++].value || null,
-            rej_dust: parseInt(inputs[i++].value) || null,
-            rej_scratch: parseInt(inputs[i++].value) || null,
-            rej_dent: parseInt(inputs[i++].value) || null,
-            rej_less_paint: parseInt(inputs[i++].value) || null,
-            rej_cut_mark: parseInt(inputs[i++].value) || null,
-            rej_paint_flow: parseInt(inputs[i++].value) || null,
-            qc_sign: inputs[i++].value || null,
-            judgement: inputs[i++].value || null,
-            line_leader: inputs[i++].value || null
-        };
-        try {
-            let res = await fetch("/api/entries/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error("Error saving row");
-        } catch (err) {
-            console.error("Save failed:", err);
-            alert("Error while saving data.");
-            return;
+    <script>
+        const STORAGE_KEY = 'painter_records_v2_fixed';
+        const entriesContainer = document.getElementById('entriesContainer');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const clearRowsBtn = document.getElementById('clearRowsBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const previewBtn = document.getElementById('previewBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const exportExcelBtn = document.getElementById('exportExcel');
+        const exportPDFBtn = document.getElementById('exportPDF');
+        const menuSearch = document.getElementById('menuSearch');
+        const menuSearchBtn = document.getElementById('menuSearchBtn');
+        const rowColumns = [
+          'lot_qty','total_ok','moulding_chemical',
+          'rep_dust','rep_scratch','rep_less_paint','rep_colour_fin','rep_light_pass','rep_ok_qty',
+          'rework_person','painter_sign',
+          'rej_dust','rej_scratch','rej_dent','rej_less_paint','rej_cut_mark','rej_paint_flow',
+          'qc_sign','judgement','line_leader'
+        ];
+        function makeInput(type, cls, value, placeholder, options){
+          let el;
+          if (type === 'select'){
+            el = document.createElement('select');
+            (options||[]).forEach(opt => { const o = document.createElement('option'); o.value = opt.value; o.text = opt.label; el.appendChild(o); });
+            el.value = value || '';
+          } else {
+            el = document.createElement('input'); el.type = type || 'text'; if (value !== undefined && value !== null) el.value = value; if (placeholder) el.placeholder = placeholder;
+          }
+          if (cls) el.classList.add(cls);
+          el.addEventListener('keydown', navKeyHandler);
+          return el;
+        }
+        function createRowElement(prefill = {}){
+          const row = document.createElement('div'); row.className = 'entry-row';
+          row.appendChild(makeInput('number','very-small', prefill['lot_qty'] ?? '', 'Lot Qty'));
+          row.appendChild(makeInput('number','very-small', prefill['total_ok'] ?? '', 'Total Ok Qty'));
+          row.appendChild(makeInput('number','very-small', prefill['moulding_chemical'] ?? '', 'M/C'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_dust'] ?? '', 'Repair Dust'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_scratch'] ?? '', 'Repair Scratch'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_less_paint'] ?? '', 'Repair Less'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_colour_fin'] ?? '', 'Repair Colour'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_light_pass'] ?? '', 'Repair Light'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_ok_qty'] ?? '', 'Repair OK Qty'));
+          row.appendChild(makeInput('text','small', prefill['rework_person'] ?? '', 'Rework Person'));
+          row.appendChild(makeInput('text','small', prefill['painter_sign'] ?? '', 'Painter Sign'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_dust'] ?? '', 'Rejection Dust'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_scratch'] ?? '', 'Rejection Scratch'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_dent'] ?? '', 'Rejection Dent'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_less_paint'] ?? '', 'Rejection Less'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_cut_mark'] ?? '', 'Rejection Cut'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_paint_flow'] ?? '', 'Rejection Flow'));
+          row.appendChild(makeInput('text','small', prefill['qc_sign'] ?? '', 'Quality Checker Sign'));
+          const sel = makeInput('select','small', prefill['judgement'] ?? '', 'judgement', [{value:'',label:''},{value:'OK',label:'OK'},{value:'NG',label:'NG'}]);
+          row.appendChild(sel);
+          row.appendChild(makeInput('text','small', prefill['line_leader'] ?? '', 'Quality Line Leader Sign'));
+          const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.className='btn warn action-btn'; delBtn.title='Remove row'; delBtn.innerHTML='<i class="fa-solid fa-trash"></i>';
+          delBtn.addEventListener('click', () => { row.remove(); updateNavInputs(); });
+          row.appendChild(delBtn);
+          return row;
+        }
+        function addRow(prefill = {}){ const el = createRowElement(prefill); entriesContainer.appendChild(el); updateNavInputs(); const inputs = el.querySelectorAll('input, select'); if (inputs[0]) inputs[0].focus(); }
+        addRow();
+        addRowBtn.addEventListener('click', () => addRow());
+        clearRowsBtn.addEventListener('click', () => { if (!confirm('Clear all entry rows?')) return; entriesContainer.innerHTML = ''; addRow(); });
+        function collectNavInputs(){ return Array.from(entriesContainer.querySelectorAll('input, select')); }
+        function navKeyHandler(e){ const inputs = collectNavInputs(); const idx = inputs.indexOf(e.target); if (e.key === 'ArrowRight'){ e.preventDefault(); if (idx>=0 && idx < inputs.length-1) inputs[idx+1].focus(); } else if (e.key === 'ArrowLeft'){ e.preventDefault(); if (idx>0) inputs[idx-1].focus(); } else if (e.key === 'Enter'){ e.preventDefault(); if (idx>=0 && idx < inputs.length-1) inputs[idx+1].focus(); } }
+        function updateNavInputs(){ const inputs = collectNavInputs(); inputs.forEach(inp => { inp.removeEventListener('keydown', navKeyHandler); inp.addEventListener('keydown', navKeyHandler); }); }
+        window.updateNavInputs = updateNavInputs;
+        function readEntriesFromStorage(){ const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw) || []; } catch(e){ return []; } }
+        function writeEntriesToStorage(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+        // REPLACED saveBtn.addEventListener('click', ...) WITH saveAllRowsToAPI
+        function parseNumber(v){ if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
+        previewBtn.addEventListener('click', () => {
+          const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
+          if (!rows.length) { alert('No rows to preview'); return; }
+          const lines = [];
+          rows.forEach((r, idx) => { const inputs = Array.from(r.querySelectorAll('input, select')); const arr = inputs.map(inp => inp.value); lines.push(`${idx+1}. ${arr.join(' | ')}`); });
+          alert(lines.join('\n\n'));
+        });
+        async function saveAllRowsToAPI() {
+            const headerDate = document.getElementById('hdr_date').value;
+            if (!headerDate) { alert('Select Date in header before saving.'); return; }
+            const headerPainter = document.getElementById('hdr_painter').value || '';
+            const headerPart = document.getElementById('hdr_part').value || '';
+            const headerGrn = document.getElementById('hdr_grn').value || '';
+            const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
+            if (!rows.length) { alert('No rows to save.'); return; }
+            for (let r of rows) {
+                const inputs = Array.from(r.querySelectorAll('input, select'));
+                let i = 0;
+                const payload = {
+                    painter_name: headerPainter,
+                    date: headerDate,
+                    part_no: headerPart,
+                    grn_no: headerGrn,
+                    lot_qty: parseInt(inputs[i++].value) || 0,
+                    total_ok: parseInt(inputs[i++].value) || 0,
+                    moulding_chemical: parseInt(inputs[i++].value) || 0,
+                    rep_dust: parseInt(inputs[i++].value) || 0,
+                    rep_scratch: parseInt(inputs[i++].value) || 0,
+                    rep_less_paint: parseInt(inputs[i++].value) || 0,
+                    rep_colour_fin: parseInt(inputs[i++].value) || 0,
+                    rep_light_pass: parseInt(inputs[i++].value) || 0,
+                    rep_ok_qty: parseInt(inputs[i++].value) || 0,
+                    rework_person: inputs[i++].value ,
+                    painter_sign: inputs[i++].value ,
+                    rej_dust: parseInt(inputs[i++].value) || 0,
+                    rej_scratch: parseInt(inputs[i++].value) || 0,
+                    rej_dent: parseInt(inputs[i++].value) || 0,
+                    rej_less_paint: parseInt(inputs[i++].value) || 0,
+                    rej_cut_mark: parseInt(inputs[i++].value) || 0,
+                    rej_paint_flow: parseInt(inputs[i++].value) || 0,
+                    qc_sign: inputs[i++].value ,
+                    judgement: inputs[i++].value ,
+                    line_leader: inputs[i++].value ,
+                };
+                try {
+                    let res = await fetch("/api/entries/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) throw new Error("Error saving row");
+                } catch (err) {
+                    console.error("Save failed:", err);
+                    alert("Error while saving data.");
+                    return;
+                }
+            }
+            alert("All rows saved to server!");
+        }
+        saveBtn.addEventListener('click', saveAllRowsToAPI);
+        /* Month / Table rendering */
+        function buildTableHtml(entries){
+          if (!entries.length) return '<div class="small">No records.</div>';
+          let html = '<table id="dataTable"><thead><tr>';
+          const heads = [
+            'Date','Painter','Part No','GRN No','Lot','Total OK',
+            'Rep Dust','Rep Scratch','Rep Less','Rep Colour','Rep Light','Rep OK',
+            'Rework Person','Painter Sign',
+            'Rej Dust','Rej Scratch','Rej Dent','Rej Less','Rej Cut','Rej Flow',
+            'QC Sign','Judgement','Line Leader'
+          ];
+          heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
+          html += '</tr></thead><tbody>';
+          entries.forEach(en => {
+            html += '<tr>';
+            const row = [
+              en.date ?? '',
+              en.painter_name ?? '',
+              en.part_no ?? '',
+              en.grn_no ?? '',
+              en.lot_qty ?? '', 
+              en.total_ok ?? '',
+              en.rep_dust ?? '',
+              en.rep_scratch ?? '',
+              en.rep_less_paint ?? '',
+              en.rep_colour_fin ?? '',
+              en.rep_light_pass ?? '',
+              en.rep_ok_qty ?? '',
+              en.rework_person ?? '',
+              en.painter_sign ?? '',
+              en.rej_dust ?? '',
+              en.rej_scratch ?? '',
+              en.rej_dent ?? '',
+              en.rej_less_paint ?? '',
+              en.rej_cut_mark ?? '',
+              en.rej_paint_flow ?? '',
+              en.qc_sign ?? '',
+              en.judgement ?? '',
+              en.line_leader ?? ''
+            ];
+            row.forEach(c => html += `<td>${escapeHtml(c)}</td>`);
+          });
+          html += '</tbody></table>';
+          return html;
+        }
+        async function loadDataFromAPI() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            if (!fromDate || !toDate) { alert("Please select both From and To dates"); return; }
+            try {
+                let res = await fetch(`/api/entries?fromDate=${fromDate}&toDate=${toDate}`);
+                let data = await res.json();
+                document.getElementById('monthResult').innerHTML = buildTableHtml(data);
+            } catch (err) {
+                console.error("Load failed:", err);
+                alert("Error while loading data.");
+            }
+        }
+        loadBtn.addEventListener('click', loadDataFromAPI);
+        /* Attach search functionality (menuSearch) */
+        if (menuSearch){ menuSearch.addEventListener('keyup', function(){ const q = this.value.toLowerCase(); const table = document.getElementById('dataTable'); if (!table) return; const rows = table.querySelectorAll('tbody tr'); rows.forEach(r => { const text = r.innerText.toLowerCase(); r.style.display = text.includes(q) ? '' : 'none'; }); }); }
+        if (menuSearchBtn){ menuSearchBtn.addEventListener('click', function(){ if (menuSearch) menuSearch.dispatchEvent(new Event('keyup')); }); }
+        /* Export handlers for range */
+        exportExcelBtn.addEventListener('click', () => {
+          const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
+          const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
+          if (!entries.length) { alert('No records in range'); return; }
+          exportEntriesToExcel(entries, `${fromDate}_to_${toDate}`);
+        });
+        exportPDFBtn.addEventListener('click', () => {
+          const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
+          const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
+          if (!entries.length) { alert('No records in range'); return; }
+          exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
+        });
+        function exportEntriesToExcel(entries, filenamePrefix) {
+          const aoa = [];
+          aoa.push(["Sri Sai Markers & Engravers"]);
+          aoa.push(["Painter Production Sheet"]);
+          aoa.push([]);
+          const table = document.getElementById("dataTable");
+          if (!table) return alert("No table available!");
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.aoa_to_sheet(aoa);
+          const wsTable = XLSX.utils.table_to_sheet(table);
+          XLSX.utils.sheet_add_json(ws, XLSX.utils.sheet_to_json(wsTable), { origin: -1 });
+          XLSX.utils.book_append_sheet(wb, ws, "Painter Records");
+          XLSX.writeFile(wb, `PainterRecords.xlsx`);
+        }
+        async function exportEntriesToPDF(filenamePrefix) {
+    const { jsPDF } = window.jspdf;
+    const dataTable = document.getElementById("dataTable");
+    const mainTemplateTable = document.getElementById("productionSheet");
+    const revisionTableElement = document.getElementById("revisionTableTemplate"); 
+    if (!mainTemplateTable || !dataTable || !revisionTableElement) {
+        console.error("Required HTML elements are missing: #productionSheet, #dataTable, or #revisionTableTemplate.");
+        return alert("Error: PDF generation failed because necessary HTML structure is missing.");
+    }
+    const dataBodyRows = Array.from(dataTable.querySelectorAll("tbody tr"));
+    const templateTbody = mainTemplateTable.querySelector('tbody');
+    templateTbody.innerHTML = '';
+    dataBodyRows.forEach(row => {
+        templateTbody.appendChild(row.cloneNode(true));
+    });
+    const pdf = new jsPDF("l", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 8;
+    const boxX = margin;
+    const boxWidth = pageWidth - margin * 2;
+    const HEADER_HEIGHT = 30; 
+    const FOOTER_REVISION_HEIGHT = 20; 
+    const logoPromise = new Promise((resolve) => {
+        const logo = new Image();
+        logo.src = "/static/logo.png";
+        logo.onerror = () => resolve(null);
+        logo.onload = () => resolve(logo);
+        if (logo.complete) resolve(logo);
+    });
+    const logo = await logoPromise;
+    const addCustomHeader = () => {
+        pdf.setDrawColor(0);
+        pdf.setLineWidth(0.5);
+        pdf.rect(boxX, margin, boxWidth, pageHeight - margin * 2);
+        if (logo) {
+            pdf.addImage(logo, "PNG", boxX + 5, margin + 5, 18, 18);
         }
+        pdf.setFontSize(16);
+        pdf.setFont("helvetica", "bold");
+        pdf.text("SRI SAI MARKERS & ENGRAVERS", pageWidth / 2, margin + 10, { align: "center" });
+        pdf.setFontSize(10);
+        pdf.setFont("helvetica", "normal");
+        pdf.text("PAINTER PRODUCTION SHEET", pageWidth / 2, margin + 18, { align: "center" });
+        pdf.setFontSize(8);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(`Format No.:- F-SSME-58`, boxX + boxWidth - 2, margin + 8, { align: "right" });
+        pdf.text(`Revision No.:- 10`, boxX + boxWidth - 2, margin + 12, { align: "right" });
+        pdf.text(`Issue Date :- 17.11.2017`, boxX + boxWidth - 2, margin + 16, { align: "right" });
+        pdf.text(`Rev Date :- 31.03.2023`, boxX + boxWidth - 2, margin + 20, { align: "right" });
+        pdf.text(`Responsibility :- Quality Checker`, boxX + boxWidth - 2, margin + 24, { align : "right"});
+    };
+    const addRevisionFooter = () => {
+        const footerY = pageHeight - margin - FOOTER_REVISION_HEIGHT; 
+        pdf.autoTable({
+            html: revisionTableElement,
+            startY: footerY,
+            styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
+            headStyles: { fillColor: [255, 255, 255], textColor: 0, fontStyle: 'bold' },
+            bodyStyles: { minCellHeight: 6, valign: 'middle' },
+            theme: "grid",
+            margin: { left: boxX + 1, right: margin + 1 }, 
+            didDrawPage: () => {} 
+        });
+    };
+    pdf.autoTable({
+        html: mainTemplateTable,
+        startY: margin + HEADER_HEIGHT,
+        styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
+        headStyles: { fillColor: [43, 110, 163], textColor: 255, fontStyle: 'bold' },
+        bodyStyles: { minCellHeight: 6 },
+        theme: "grid",
+        didDrawPage: (data) => {
+            addCustomHeader();
+            addRevisionFooter();
+        },
+        pageBreak: 'auto',
+        margin: { bottom: 25, left: boxX + 1, right: margin + 1 } 
+    });
+    templateTbody.innerHTML = '';
+    pdf.save(`PainterRecords.pdf`);
+}
+        function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+        function getLocation() {
+            const locationDisplay = document.getElementById('displayLocation');
+            const locationInput = document.getElementById('hdr_location');
+            const TARGET_LOCATIONS = [
+                { name: "Plot No- 71", lat: 28.4491776, lon: 77.053952 },
+                { name: "Plot No- 545", lat: 30.7333, lon: 76.7794 }, 
+                { name: "Aastha", lat: 18.5204, lon: 73.8567 }    
+            ];
+            const GPS_TOLERANCE_KM = 1.0; 
+            if (locationDisplay) locationDisplay.textContent = "Getting GPS...";
+            if (locationInput) locationInput.value = "";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+                let foundLocation = "Plot No-71";
+                console.log(`User Coords: Lat ${userLat}, Lon ${userLon}`);
+                function getDistance(lat1, lon1, lat2, lon2) {
+                    const R = 6371;
+                    const dLat = (lat2 - lat1) * Math.PI / 180;
+                    const dLon = (lon2 - lon1) * Math.PI / 180;
+                    const a = 
+                        0.5 - Math.cos(dLat)/2 + 
+                        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (0.5 - Math.cos(dLon)/2);
+                    return R * 2 * Math.asin(Math.sqrt(a));
+                }
+                for (const target of TARGET_LOCATIONS) {
+                    const distance = getDistance(userLat, userLon, target.lat, target.lon);
+                    console.log(`Distance to ${target.name}: ${distance.toFixed(3)} km`);
+                    if (distance <= GPS_TOLERANCE_KM) {
+                        foundLocation = target.name;
+                        break;
+                    }
+                }
+                const locationText = foundLocation;
+                if (locationDisplay) locationDisplay.textContent = locationText;
+                if (locationInput) locationInput.value = locationText;
+            },
+            (error) => {
+                const errorText = "Location Denied";
+                if (locationDisplay) locationDisplay.textContent = errorText;
+                if (locationInput) locationInput.value = errorText;
+                console.error("Geolocation Error:", error.message);
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } 
+        );
+    } else {
+        const errorText = "Geo Not Supported";
+        if (locationDisplay) locationDisplay.textContent = errorText;
+        if (locationInput) locationInput.value = errorText;
     }
-    alert("All rows saved to server!");
 }
-saveBtn.addEventListener('click', saveAllRowsToAPI);
-/* Month / Table rendering */
-function buildTableHtml(entries){
-  if (!entries.length) return '<div class="small">No records.</div>';
-  let html = '<table id="dataTable"><thead><tr>';
-  const heads = [
-    'Date','Painter','Part No','GRN No','Lot','Total OK',
-    'Rep Dust','Rep Scratch','Rep Less','Rep Colour','Rep Light','Rep OK',
-    'Rework Person','Painter Sign',
-    'Rej Dust','Rej Scratch','Rej Dent','Rej Less','Rej Cut','Rej Flow',
-    'QC Sign','Judgement','Line Leader'
-  ];
-  heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
-  html += '</tr></thead><tbody>';
-  
-  entries.forEach(en => {
-    html += '<tr>';
-    const row = [
-      en.date || '',
-      en.painter_name || '',   
-      en.part_no || '',        
-      en.grn_no || '',         
-      en.lot_qty || '',
-      en.total_ok || '',
-      en.rep_dust ?? '',
-      en.rep_scratch ?? '',
-      en.rep_less_paint ?? '',
-      en.rep_colour_fin ?? '',
-      en.rep_light_pass ?? '',
-      en.rep_ok_qty ?? '',
-      en.rework_person || '',
-      en.painter_sign || '',
-      en.rej_dust ?? '',
-      en.rej_scratch ?? '',
-      en.rej_dent ?? '',
-      en.rej_less_paint ?? '',
-      en.rej_cut_mark ?? '',
-      en.rej_paint_flow ?? '',
-      en.qc_sign || '',
-      en.judgement || '',
-      en.line_leader || ''
-    ];
-    row.forEach(c => html += `<td>${escapeHtml(c)}</td>`);
-  });
-
-  html += '</tbody></table>';
-  return html;
-}
-async function loadDataFromAPI() {
-    const fromDate = document.getElementById('fromDate').value;
-    const toDate = document.getElementById('toDate').value;
-    if (!fromDate || !toDate) { alert("Please select both From and To dates"); return; }
-    try {
-        let res = await fetch("/api/entries/");
-        let data = await res.json();
-        let filtered = data.filter(e => e.date >= fromDate && e.date <= toDate);
-        document.getElementById('monthResult').innerHTML = buildTableHtml(filtered);
-    } catch (err) {
-        console.error("Load failed:", err);
-        alert("Error while loading data.");
-    }
-}
-loadBtn.addEventListener('click', loadDataFromAPI);
-/* Attach search functionality (menuSearch) */
-if (menuSearch){ menuSearch.addEventListener('keyup', function(){ const q = this.value.toLowerCase(); const table = document.getElementById('dataTable'); if (!table) return; const rows = table.querySelectorAll('tbody tr'); rows.forEach(r => { const text = r.innerText.toLowerCase(); r.style.display = text.includes(q) ? '' : 'none'; }); }); }
-if (menuSearchBtn){ menuSearchBtn.addEventListener('click', function(){ if (menuSearch) menuSearch.dispatchEvent(new Event('keyup')); }); }
-/* Export handlers for range */
-exportExcelBtn.addEventListener('click', () => {
-  const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
-  const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
-  if (!entries.length) { alert('No records in range'); return; }
-  exportEntriesToExcel(entries, `${fromDate}_to_${toDate}`);
-});
-exportPDFBtn.addEventListener('click', () => {
-  const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
-  const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
-  if (!entries.length) { alert('No records in range'); return; }
-  exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
-});
-/* Month exports */
-document.getElementById('exportMonthExcel').addEventListener('click', function(){ const m = document.getElementById('monthPicker').value; if (!m) { alert('Pick a month first'); return; } const entries = readEntriesFromStorage().filter(e => e.date && e.date.slice(0,7) === m); if (!entries.length) { alert('No records for this month'); return; } exportEntriesToExcel(entries, m); });
-document.getElementById('exportMonthPDF').addEventListener('click', function(){ const m = document.getElementById('monthPicker').value; if (!m) { alert('Pick a month first'); return; } const entries = readEntriesFromStorage().filter(e => e.date && e.date.slice(0,7) === m); if (!entries.length) { alert('No records for this month'); return; } exportEntriesToPDF(entries, m); });
-/* delete/clear */
-function deleteEntry(savedAt){ if (!confirm('Delete this single entry?')) return; const remaining = readEntriesFromStorage().filter(e => e.savedAt !== savedAt); writeEntriesToStorage(remaining); alert('Deleted'); document.getElementById('monthResult').innerHTML = '<div class="small">Entry deleted. Reload range to refresh.</div>'; }
-document.getElementById('clearAllData').addEventListener('click', function(){ if (!confirm('Delete ALL saved records from this browser? This cannot be undone.')) return; localStorage.removeItem(STORAGE_KEY); document.getElementById('monthResult').innerHTML = '<div class="small">All records removed.</div>'; });
-/* single-entry exports used from table */
-function exportSingleExcel(savedAt){ const entry = readEntriesFromStorage().find(e=> e.savedAt === savedAt); if (!entry ) { alert('Not found'); return; } exportEntriesToExcel ([entry], savedAt); }
-function exportSinglePDF(savedAt) { const entry = readEntriesFromStorage().find(e=> e.savedAt === savedAt ); if(!entry) { alert('Not Found'); return; } exportEntriesToPDF([entry], savedAt);}
-function exportEntriesToExcel(entries, filenamePrefix) {
-  const aoa = [];
-  aoa.push(["Sri Sai Markers & Engravers"]);
-  aoa.push(["Painter Production Sheet"]);
-  aoa.push([]);
-  const table = document.getElementById("dataTable");
-  if (!table) return alert("No table available!");
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(aoa);
-  const wsTable = XLSX.utils.table_to_sheet(table);
-  XLSX.utils.sheet_add_json(ws, XLSX.utils.sheet_to_json(wsTable), { origin: -1 });
-  XLSX.utils.book_append_sheet(wb, ws, "Painter Records");
-  XLSX.writeFile(wb, `PainterRecords.xlsx`);
-}
-function exportEntriesToPDF(filenamePrefix) {
-  const table = document.getElementById("dataTable");
-  if (!table) return alert("No table available!");
-  const headers = [];
-  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
-  const body = [];
-  table.querySelectorAll("tbody tr").forEach(tr => {
-    const row = [];
-    tr.querySelectorAll("td").forEach(td => row.push(td.innerText));
-    body.push(row);
-  });
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("l", "mm", "a4");
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 8;
-  const boxX = margin;
-  const boxY = margin;
-  const boxWidth = pageWidth - margin * 2;
-  const boxHeight = pageHeight - margin * 2;
-  pdf.setDrawColor(0); 
-  pdf.setLineWidth(0.5);
-  pdf.rect(boxX, boxY, boxWidth, boxHeight);
-  const logo = new Image();
-  logo.src = "/static/logo.png"; 
-  logo.onload = function () {
-    const imgWidth = 18;
-    const imgHeight = 18;
-    const imgX = boxX + 5;
-    const imgY = boxY + 5;
-    pdf.addImage(logo, "PNG", imgX, imgY, imgWidth, imgHeight);
-  pdf.setFontSize(16);
-  pdf.text("Sri Sai Markers & Engravers", pageWidth / 2, boxY + 10, { align: "center" });
-  pdf.setFontSize(10);
-  pdf.text("Painter Production Sheet Filled By Quality Checker", pageWidth / 2, boxY + 18, { align: "center" });
-  pdf.autoTable({
-    startY: boxY + 25,
-    head: [headers],
-    body: body,
-    styles: { fontSize: 8 },
-    headStyles: { fillColor: [43, 110, 163], textColor: 255 },
-    theme: "grid",
-    margin: { left: boxX + 2, right: margin + 2 },
-  });
-  pdf.save(`PainterRecords.pdf`);
-};
-}
-function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-(function init(){ const now = new Date(); const mm = now.toISOString().slice(0,7); const monthPicker = document.getElementById('monthPicker'); if (monthPicker) monthPicker.value = mm; const from = new Date(now.getFullYear(), now.getMonth(), 1); const to = new Date(now.getFullYear(), now.getMonth()+1, 0); document.getElementById('fromDate').value = from.toISOString().slice(0,10); document.getElementById('toDate').value = to.toISOString().slice(0,10); updateNavInputs(); })();
+    (function init(){ 
+    const now = new Date(); 
+    const today = now.toISOString().slice(0,10);
+    const hdrDateEl = document.getElementById('hdr_date');
+    if (hdrDateEl) hdrDateEl.value = today; 
+    const mm = today.slice(0,7);
+    const monthPicker = document.getElementById('monthPicker'); 
+    if (monthPicker) monthPicker.value = mm; 
+    const from = new Date(now.getFullYear(), now.getMonth(), 1); 
+    const to = new Date(now.getFullYear(), now.getMonth()+1, 0); 
+    document.getElementById('fromDate').value = from.toISOString().slice(0,10); 
+    document.getElementById('toDate').value = to.toISOString().slice(0,10); 
+    try { getLocation(); } catch(e){ console.warn('getLocation() failed to start', e); }
+    updateNavInputs(); 
+})();
 </script>
 </body>
 </html>

@@ -21,7 +21,7 @@ class BuffingEntryAdmin(admin.ModelAdmin):
 @admin.register(MaskingEntry)
 class MaskingEntryAdmin(admin.ModelAdmin):
     list_display = (
-        "date","item_description","start_time","end_time",
+        "department","date","item_description","lot_qty","start_time","end_time",
         "ok_qty_after_masking","reject_qty","defect","judgement","prepared_by","verify_by"
     )
     search_fields = ("item_description", "prepared_by")
