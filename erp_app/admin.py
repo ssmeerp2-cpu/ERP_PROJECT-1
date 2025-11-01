@@ -30,7 +30,7 @@ class MaskingEntryAdmin(admin.ModelAdmin):
 class PaintStirringEntryAdmin(admin.ModelAdmin):
     list_display = (
         "date","paint_name","paint_code","batch_code","pkg_size","pkg_references",
-        "expry_date","air_pressure","start_time","end_time","done_by","judgement","verify_by","remarks"
+        "expiry_date","air_pressure","start_time","end_time","done_by","judgement","verify_by","remarks"
     )
     search_fields = ("paint_name", "paint_code", "batch_code", "done_by")
     list_filter = ("date",)

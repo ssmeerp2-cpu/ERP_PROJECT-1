@@ -68,7 +68,7 @@ class PaintStirringEntry(models.Model):
     batch_code = models.CharField(max_length=100)
     pkg_size = models.CharField(max_length=50)
     pkg_references= models.CharField(max_length=100)
-    expry_date = models.DateField()
+    expiry_date = models.DateField()
     air_pressure = models.FloatField()
     start_time = models.TimeField()
     end_time = models.TimeField()
