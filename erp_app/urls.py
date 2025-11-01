@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.reporting, name='home'),  # root URL par reporting view
     path('testing1.html/', views.testing1_view, name='testing1'),
     path('api/entries/', views.api_entries_view, name='api_entries'),
+     path('api/entries/<int:pk>/', views.api_entries_view, name='painter-entry-detail'),  # Add this for GET/PUT by ID
     path('reporting/', views.reporting, name='reporting'),
     path('buffing_production.html/', views.buffing_page, name='buffing_page'),
     path('api/buffing-entries/', views.api_buffing_entries_view, name='api_buffing_entries'),

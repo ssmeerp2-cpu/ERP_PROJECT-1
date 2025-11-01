@@ -46,6 +46,10 @@
   table{ width:100%; border-collapse:collapse; margin-top:12px; }
   th, td{ border:1px solid #e1eefb; padding:8px; text-align:left; font-size:13px; vertical-align:middle; }
   th{ background:#f4fbff; color:var(--blue); font-weight:800; }
+  #revisionTableTemplate {width: 100%;border-collapse: collapse;font-family: Arial, sans-serif;border: 1px solid #333;}
+  #revisionTableTemplate td {border: 1px solid #666;padding: 8px 10px;text-align: left;}
+  .rev-history-header td {background-color: #eee;font-weight: bold;color: #333;text-align: center;}
+  #revisionTableTemplate tbody tr:hover {background-color: #f5f5f5;}
   @media (max-width:980px){ .form-grid{ grid-template-columns: repeat(2, 1fr); } .entry-row{ flex-wrap:wrap; } }
   @media (max-width:600px){ .form-grid{ grid-template-columns: 1fr; } .entry-row{ flex-direction:column; align-items:stretch; } }
 </style>
@@ -115,7 +119,7 @@
         <header>
             <div class="header-left">
                 <div class="logo-placeholder">
-                    <img src="/static/logo.png" alt="Company Logo" style="height: 40px; width: 40px; vertical-align: middle;">
+                    <img src="/static/logo.png" alt="Company Logo" style="height: 58px; width: 58px; vertical-align: middle;">
                 </div>
                 <h1>SRI SAI MARKERS & ENGRAVERS</h1>
                 <h2>MASKING SHEET</h2>
@@ -124,12 +128,13 @@
                 <p>Format No:- F-SSME-52</p>
                 <p>Revision No:- 02</p>
                 <p>Issue Date:- 31.10.2017</p>
-                <p>Rev Date:- 08.07.2022</p>
-                <p>Responsibility : Quality Checker </p>
+                <p>Rev Date:-08.07.2022</p>
             </div>
         </header>
+        
         <table class="production-sheet" id="productionSheet">
             <colgroup>
+                <col>
                 <col>
                 <col>
                 <col>
@@ -145,79 +150,51 @@
             </colgroup>
             <thead>
                 <tr>
-                    <td>Department</td>
-                    <td>Date</td>
-                    <td>Item Description</td>
-                    <td>Lot Qty</td>
-                    <td>Start Time</td>
-                    <td>End Time</td>
-                    <td>OK Qty After Masking</td>
-                    <td>Reject Qty</td>
-                    <td>Defect</td>
-                    <td>Judgement (OK/NG)</td>
-                    <td>Prepare By</td>
-                    <td>Verify By</td>
+                    <td rowspan="2">Department</td>
+                    <td rowspan="2">Date</td>
+                    <td rowspan="2">Item Description</td>
+                    <td rowspan="2">Qty/Lot</td>
+                    <td rowspan="2">Start Time</td>
+                    <td rowspan="2">End Time</td> 
+                    <td rowspan="2">OK Qty After Masking</td>
+                    <td rowspan="2">Reject Qty</td>
+                    <td rowspan="2">Defect</td>
+                    <td rowspan="2">Judgement</td>
+                    <td rowspan="2">Prepared By</td>
+                    <td rowspan="2">Verified By</td>
                 </tr>
             </thead>
             <tbody>
-                <tr class="rev-history-header">
-                    <td colspan="12">
-                        <table style="width:100%; border:none; border-collapse: collapse;">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 60%;">
-                                <col style="width: 15%;">
-                                <col style="width: 15%;">
-                            </colgroup>
-                            <tr>
-                                <td>S.No.</td>
-                                <td>Amendment</td>
-                                <td>Rev. No.</td>
-                                <td>Rev. Date</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr> 
-                <tr class="rev-history">
-                    <td colspan="12">
-                        <table style="width:100%; border:none; border-collapse: collapse;">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 60%;">
-                                <col style="width: 15%;">
-                                <col style="width: 15%;">
-                            </colgroup>
-                            <tr>
-                                <td>01</td>
-                                <td class="amendment-cell">Add Judgement Criteria</td>
-                                <td>01</td>
-                                <td>14.01.2019</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="12">
-                        <table style="width:100%; border:none; border-collapse: collapse;">
-                            <colgroup>
-                                <col style="width: 10%;">
-                                <col style="width: 60%;">
-                                <col style="width: 15%;">
-                                <col style="width: 15%;">
-                            </colgroup>
-                            <tr>
-                                <td>02</td>
-                                <td class="amendment-cell">Change Format Number</td>
-                                <td>02</td>
-                                <td>08.07.2022</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
+                </tbody>
         </table>
+        </div>
+    <div id="revisionHistoryTemplate">
+      <table id="revisionTableTemplate">
+        <thead>
+          <tr class="rev-history-header">
+            <td>S No. </td>
+            <td>Amendment. </td>
+            <td>Rev No. </td>
+            <td>Rev Date </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rev-histroy">
+            <td>1</td>
+            <td>Add Judgement Criteria</td>
+            <td>01</td>
+            <td>14.01.2019</td>
+          </tr>
+          <tr class="rev-histroy">
+            <td>2</td>
+            <td>Change Format Number</td>
+            <td>02</td>
+            <td>08.07.2022</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
     </div>
-</div>
  <!--------------------------->
 </div>
 <script>
@@ -325,16 +302,21 @@ async function saveAllRowsToAPI() {
             department: headerDepartment,
             date: headerDate,
             item_description: headerItem,
-            lot_qty: parseInt(inputs[i++].value) || null,
+            lot_qty: parseInt(inputs[i++].value),
             start_time: inputs[i++].value || null,
             end_time: inputs[i++].value || null,
-            ok_qty_after_masking: parseInt(inputs[i++].value) || null,
-            reject_qty: parseInt(inputs[i++].value) || null,
-            defect: parseInt(inputs[i++].value) || null,
-            judgement: inputs[i++].value || null,
-            prepared_by: inputs[i++].value || null,
-            verify_by: inputs[i++].value || null,
+            ok_qty_after_masking: parseInt(inputs[i++].value),
+            reject_qty: parseInt(inputs[i++].value),
+            defect: parseInt(inputs[i++].value),
+            judgement: inputs[i++].value,
+            prepared_by: inputs[i++].value || '',
+            verify_by: inputs[i++].value || '',
         };
+        
+        if(!payload.department || !payload.item_description || !payload.lot_qty || !payload.start_time || !payload.end_time || !payload.ok_qty_after_masking || !payload.judgement){
+            alert('You are not filling proper data.');
+            return;
+        }
         try {
             let res = await fetch("/api/masking-entries/", {
                 method: "POST",
@@ -474,84 +456,87 @@ function exportEntriesToExcel(entries, filenamePrefix) {
     XLSX.utils.book_append_sheet(wb, ws, "Masking Records");
     XLSX.writeFile(wb, `MaskingRecords.xlsx`);
 }
-async function exportEntriesToPDF(filenamePrefix) {
-    const { jsPDF } = window.jspdf;
-    const templateContainer = document.getElementById("formContainer");
-    const tableElement = document.getElementById("productionSheet");
-    if (!templateContainer || !tableElement) {
-        return alert("Error: PDF template structure (formContainer/productionSheet) is missing from the page. Please ensure the hidden template is included.");
-    }
-    const dataTable = document.getElementById("dataTable");
-    if (!dataTable) {
-        return alert("No monthly data table (dataTable) available to export. Please load data first.");
-    }
-    const dataBodyRows = Array.from(dataTable.querySelectorAll("tbody tr"));
-    if (dataBodyRows.length === 0) {
-        return alert("No records found in the loaded data table to export.");
-    }
-    const templateTbody = tableElement.querySelector('tbody');
-    const revHistoryRows = templateTbody.querySelectorAll('.rev-history-header, .rev-history');
-    const historyFragment = document.createDocumentFragment();
-    revHistoryRows.forEach(row => historyFragment.appendChild(row.cloneNode(true)));
-    templateTbody.innerHTML = '';
-    dataBodyRows.forEach(row => {
-        templateTbody.appendChild(row.cloneNode(true));
-    });
-    templateTbody.appendChild(historyFragment);
-    const pdf = new jsPDF("l", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 8;
-    const boxX = margin;
-    const boxWidth = pageWidth - margin * 2;
-    let currentY = margin;
-    const logoPromise = new Promise((resolve) => {
-        const logo = new Image();
-        logo.src = "/static/logo.png";
-        logo.onerror = () => {
-            console.warn("Logo failed to load. Proceeding without image.");
-            resolve(null);
-        };
-        logo.onload = () => {
-            resolve(logo);
-        };
-        if (logo.complete) {
-            resolve(logo);
+ async function exportEntriesToPDF(filenamePrefix) {
+            const { jsPDF } = window.jspdf;
+            const dataTable = document.getElementById("dataTable");
+            const mainTemplateTable = document.getElementById("productionSheet");
+            const revisionTableElement = document.getElementById("revisionTableTemplate"); 
+            if (!mainTemplateTable || !dataTable || !revisionTableElement) {
+                console.error("Required HTML elements are missing: #productionSheet, #dataTable, or #revisionTableTemplate.");
+                return alert("Error: PDF are not generated before Clicking the Load Data Button.");
+            }
+            const dataBodyRows = Array.from(dataTable.querySelectorAll("tbody tr"));
+            const templateTbody = mainTemplateTable.querySelector('tbody');
+            templateTbody.innerHTML = '';
+            dataBodyRows.forEach(row => {
+                templateTbody.appendChild(row.cloneNode(true));
+            });
+            const pdf = new jsPDF("l", "mm", "a4");
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 2;
+            const boxX = margin;
+            const boxWidth = pageWidth - margin * 2;
+            const HEADER_HEIGHT = 25; 
+            const FOOTER_REVISION_HEIGHT = 40; 
+            const logoPromise = new Promise((resolve) => {
+                const logo = new Image();
+                logo.src = "/static/logo.png";
+                logo.onerror = () => resolve(null);
+                logo.onload = () => resolve(logo);
+                if (logo.complete) resolve(logo);
+            });
+            const logo = await logoPromise;
+            const addCustomHeader = () => {
+                pdf.setDrawColor(0);
+                pdf.setLineWidth(0.5);
+                pdf.rect(boxX, margin, boxWidth, pageHeight - margin * 2);
+                if (logo) {
+                    pdf.addImage(logo, "PNG", boxX + 5, margin + 2, 18, 18);
+                }
+                pdf.setFontSize(15);
+                pdf.setFont("helvetica", "bold");
+                pdf.text("SRI SAI MARKERS & ENGRAVERS", pageWidth / 2, margin + 8, { align: "center" });
+                pdf.setFontSize(9);
+                pdf.setFont("helvetica", "bold");
+                pdf.text("Masking SHEET", pageWidth / 2, margin + 16, { align: "center" });
+                pdf.setFontSize(7);
+                pdf.setFont("helvetica", "bold");
+                pdf.text(`Format No.:- F-SSME-52`, boxX + boxWidth - 2, margin + 6, { align: "right" });
+                pdf.text(`Revision No.:- 02`, boxX + boxWidth - 2, margin + 10, { align: "right" });
+                pdf.text(`Issue Date :- 31.10.2017`, boxX + boxWidth - 2, margin + 14, { align: "right" });
+                pdf.text(`Rev Date :- 08.07.2022`, boxX + boxWidth - 2, margin + 18, { align: "right" });
+            };
+            const addRevisionFooter = () => {
+                const footerY = pageHeight - FOOTER_REVISION_HEIGHT; 
+                pdf.autoTable({
+                    html: revisionTableElement,
+                    startY: footerY,
+                    styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
+                    headStyles: { fillColor: [255, 255, 255], textColor: 0, fontStyle: 'bold' },
+                    bodyStyles: { minCellHeight: 6, valign: 'middle' },
+                    theme: "grid",
+                    margin: { left: boxX + 1, right: margin + 1 }, 
+                    didDrawPage: () => {} 
+                });
+            };
+            pdf.autoTable({
+                html: mainTemplateTable,
+                startY: margin + HEADER_HEIGHT,
+                styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
+                headStyles: { fillColor: [43, 110, 163], textColor: 255, fontStyle: 'bold' },
+                bodyStyles: { minCellHeight: 6 },
+                theme: "grid",
+                didDrawPage: (data) => {
+                    addCustomHeader();
+                    addRevisionFooter();
+                },
+                pageBreak: 'auto',
+                margin: { bottom: 0, left: boxX + 1, right: margin + 1 }
+            });
+            templateTbody.innerHTML = '';
+            pdf.save(`MaskingRecords.pdf`);
         }
-    });
-    const logo = await logoPromise;
-    pdf.setDrawColor(0);
-    pdf.setLineWidth(0.5);
-    pdf.rect(boxX, currentY, boxWidth, pageHeight - margin * 2);
-    if (logo) {
-        pdf.addImage(logo, "PNG", boxX + 5, currentY + 5, 18, 18);
-    }
-    pdf.setFontSize(16);
-    pdf.setFont("helvetica", "bold");
-    pdf.text("SRI SAI MARKERS & ENGRAVERS", pageWidth / 2, currentY + 10, { align: "center" });
-    pdf.setFontSize(10);
-    pdf.setFont("helvetica", "normal");
-    pdf.text("MASKING SHEET", pageWidth / 2, currentY + 18, { align: "center" });
-    currentY += 25;
-    pdf.setFontSize(8);
-    pdf.setFont("helvetica", "bold");
-    pdf.text(`Format No.:- F-SSME-58`, boxX + boxWidth - 2, margin + 8, { align: "right" });
-    pdf.text(`Revision No.:- 10`, boxX + boxWidth - 2, margin + 12, { align: "right" });
-    pdf.text(`Issue Date :- 17.11.2017`, boxX + boxWidth - 2, margin + 16, { align: "right" });
-    pdf.text(`Rev Date :- 31.03.2023`, boxX + boxWidth - 2, margin + 20, { align: "right" });
-    pdf.autoTable({
-        html: tableElement,
-        startY: currentY,
-        styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
-        headStyles: { fillColor: [43, 110, 163], textColor: 255, fontStyle: 'bold' },
-        bodyStyles: { minCellHeight: 6 },
-
-        theme: "grid",
-        margin: { left: boxX + 1, right: margin + 1, top: currentY }
-    });
-    templateTbody.innerHTML = '';
-    pdf.save(`MaskingRecords.pdf`);
-}
 function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 (function init(){ 
  const now = new Date(); 

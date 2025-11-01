@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Painter Production Sheet</title>
+    <title>Paint Consumption Production Sheet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -60,10 +60,10 @@
         #productionSheet {table-layout: fixed;width: 100%;}
         #productionSheet th, #productionSheet td {border: 1px solid #000;padding: 2px 4px;font-size: 8px;text-align: center;vertical-align: middle;}
         #productionSheet thead td { font-weight: bold;background-color: #f0f0f0;}
-        #revisionTableTemplate {width: 100%;border-collapse: collapse;font-family: Arial, sans-serif;border: 1px solid #333;}
-        #revisionTableTemplate td {border: 1px solid #666;padding: 8px 10px;text-align: left;}
-        .rev-history-header td {background-color: #eee;font-weight: bold;color: #333;text-align: center;}
-        #revisionTableTemplate tbody tr:hover {background-color: #f5f5f5;}
+        .rev-history-header td, .rev-history td {padding: 0;border: none !important;}
+        .rev-history-header table, .rev-history table {width: 100%;border-collapse: collapse;}
+        .rev-history-header table th, .rev-history-header table td,
+        .rev-history table th, .rev-history table td {font-size: 7px !important;border: 1px solid #000 !important;padding: 2px;text-align: center;vertical-align: middle;}
     </style>
 </head>
 <body>
@@ -72,7 +72,7 @@
             <div class="company">SRI SAI</div>
             <div class="erp-menu" id="displayLocation">Fetching Location...</div>
         </div>
-        <div class="top-center"><div class="menu-title">Painter Production</div></div>
+        <div class="top-center"><div class="menu-title">Paint Detail Sheet</div></div>
         <div class="top-right">
             <div class="search-box" title="Search menu">
                 <input id="menuSearch" type="search" placeholder="Search" aria-label="Menu search">
@@ -84,12 +84,16 @@
     </header>
     <div class="wrap">
         <div class="panel" id="entryPanel">
-            <h2>Painter — Daily Entries</h2>
-            <div style="font-weight:700; color:var(--blue); margin-bottom:8px;">Header</div>
+            <h2>Description Of Paint Consumption in Grams</h2>
+            <!--<div style="font-weight:700; color:var(--blue); margin-bottom:8px;">Header</div>-->
             <div class="form-grid" id="headerForm">
                 <div>
                     <label>Painter Name</label>
                     <input id="hdr_painter" type="text" placeholder="Painter name">
+                </div>
+                <div>
+                    <label>Department</label>
+                    <input id="hdr_department" type="text" placeholder="Department">
                 </div>
                 <div>
                     <label>Date</label>
@@ -100,8 +104,36 @@
                     <input id="hdr_part" type="text" placeholder="Part No">
                 </div>
                 <div>
-                    <label>GRN No</label>
-                    <input id="hdr_grn" type="text" placeholder="GRN No">
+                    <label>Lot Qty</label>
+                    <input id="hdr_lot_qty" type="text" placeholder="Lot Qty">
+                </div>
+                <div>
+                    <label>Mixing Time</label>
+                    <input id="hdr_mixing" type="text" placeholder="Mixing Time">
+                </div>
+                <div>
+                    <label>Hardener</label>
+                    <input id="hdr_hardener" type="text" placeholder="Hardener">
+                </div>
+                <div>
+                    <label>Thinner</label>
+                    <input id="hdr_thinner" type="text" placeholder="Thinner">
+                </div>
+                <div>
+                    <label>Paint Maker</label>
+                    <input id="hdr_maker" type="text" placeholder=" Paint Maker">
+                </div>
+                <div>
+                    <label>Judgement</label>
+                    <input id="hdr_judgement" type="text" placeholder="Judgement">
+                </div>
+                <div>
+                    <label>Production Incharge</label>
+                    <input id="hdr_prod_incharge" type="text" placeholder="Production Incharge">
+                </div>
+                <div>
+                    <label>Painter</label>
+                    <input id="hdr_painter" type="text" placeholder="Sunil" readonly>
                 </div>
             </div>
             <input id="hdr_location" type="hidden">
@@ -142,29 +174,15 @@
                 <h2>PAINTER PRODUCTION SHEET</h2>
             </div>
             <div class="header-right">
-                <p>Format No:- F-SSME-58</p>
-                <p>Revision No:- 10</p>
-                <p>Issue Date:- 17.11.2017</p>
-                <p>Rev Date:- 31.03.2023</p>
+                <p>Format No:- F-SSME-54</p>
+                <p>Revision No:- 05</p>
+                <p>Issue Date:- 31.10.2017</p>
+                <p>Rev Date:- 08.07.2022</p>
                 <p>Responsibility:- Quality Checker</p>
             </div>
         </header>
-        
         <table class="production-sheet" id="productionSheet">
             <colgroup>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
                 <col>
                 <col>
                 <col>
@@ -186,14 +204,15 @@
                     <td rowspan="2">GRN No.</td>
                     <td rowspan="2">Lot Qty</td>
                     <td rowspan="2">Total OK</td>
-                    <td rowspan="2">Moulding/ Chemical</td> 
+                    <td rowspan="2">Moulding/ 
+                        Chemical</td> 
                     <td colspan="5" class="repairable-section">Repairable Qty. <sup>7</sup></td>
                     <td rowspan="2">Repair OK Qty.</td>
                     <td rowspan="2">Rework person <sup>8</sup></td>
                     <td rowspan="2">Painter Sign</td>
                     <td colspan="6" class="rejection-section">Rejection</td>
-                    <td rowspan="2">Quality Checker Sign </td>
-                    <td rowspan="2">Judgement (OK/NG)</td>
+                    <td rowspan="2">Quality Checker Sign (OK/NG)</td>
+                    <td rowspan="2">Judgement</td>
                     <td rowspan="2">Quality Line Leader Sign</td>
                 </tr>
                 <tr>
@@ -201,7 +220,7 @@
                     <td>Scratch</td>
                     <td>Less Paint</td>
                     <td>Colour, Finish NG</td>
-                    <td>Light Pass</td>
+                    <td>Light Pts</td>
                     <td>Dust</td>
                     <td>Scratch</td>
                     <td>Dent</td>
@@ -214,46 +233,55 @@
                 </tbody>
         </table>
         </div>
-    <div id="revisionHistoryTemplate">
-      <table id="revisionTableTemplate">
-        <thead>
-          <tr class="rev-history-header">
-            <td>S No. </td>
-            <td>Amendment. </td>
-            <td>Rev No. </td>
-            <td>Rev Date </td>
-            <td>Prepared By </td>
-            <td>Approved By </td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="rev-histroy">
-            <td>1</td>
-            <td>Add Rework Emery Person Name</td>
-            <td>08</td>
-            <td>08.02.2022</td>
-            <td>Chandni</td>
-            <td>Deepak Verma</td>
-          </tr>
-          <tr class="rev-histroy">
-            <td>2</td>
-            <td>Change Format Number</td>
-            <td>09</td>
-            <td>07.12.2021</td>
-            <td>Chandni</td>
-            <td>Deepak Verma</td>
-          </tr>
-          <tr class="rev-histroy">
-            <td>3</td>
-            <td>Update the review the format</td>
-            <td>10</td>
-            <td>07.12.2021</td>
-            <td>Vikramjeet</td>
-            <td>Deepak Verma</td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
+    
+    <div id="revisionHistoryTemplate" style="display: none;">
+        <table id="revisionTableTemplate">
+            <tbody>
+                <tr class="rev-history-header">
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>Rev. No.</td><td>Amendment</td><td>Rev. Date</td><td>Prepared By</td><td>Approved By</td></tr>
+                        </table>
+                    </td>
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>Rev.</td><td>Amendment</td><td>Rev. Date</td><td>Prepared By</td><td>Approved By</td></tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="rev-history">
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>07</td><td class="amendment-cell">Add reparable defects</td><td>07.12.2021</td><td>chandni</td><td>Deepak</td></tr>
+                        </table>
+                    </td>
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>09</td><td class="amendment-cell">Change Format number</td><td>08.07.2022</td><td>chandni</td><td>Deepak Verma</td></tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="rev-history">
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>08</td><td class="amendment-cell">Add Rework emery person name</td><td>08.02.2022</td><td>chandni</td><td>Deepak</td></tr>
+                        </table>
+                    </td>
+                    <td colspan="12">
+                        <table style="width:100%; border:none; border-collapse: collapse;">
+                            <colgroup><col style="width: 10%;"><col style="width: 50%;"><col style="width: 16%;"><col style="width: 12%;"><col style="width: 12%;"></colgroup>
+                            <tr><td>10</td><td class="amendment-cell">Update the review the format</td><td>31.03.2023</td><td>Vikramjeet</td><td>Deepak Verma</td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     </div>
     </div>
     <script>
@@ -289,77 +317,34 @@
           return el;
         }
         function createRowElement(prefill = {}){
-            try {
-                const row = document.createElement('div'); 
-                row.className = 'entry-row';
-                row.appendChild(makeInput('number','very-small', prefill['lot_qty'] ?? '', 'Lot Qty'));
-                row.appendChild(makeInput('number','very-small', prefill['total_ok'] ?? '', 'Total Ok Qty'));
-                const mcInput = makeInput('number','very-small', prefill['moulding_chemical'] ?? '', 'M/C');
-                row.appendChild(mcInput);
-                const repDustInput = makeInput('number','very-small', prefill['rep_dust'] ?? '', 'Repair Dust');
-                row.appendChild(repDustInput);
-                const repScratchInput = makeInput('number','very-small', prefill['rep_scratch'] ?? '', 'Repair Scratch');
-                row.appendChild(repScratchInput);
-                const repLessInput = makeInput('number','very-small', prefill['rep_less_paint'] ?? '', 'Repair Less');
-                row.appendChild(repLessInput);
-                const repColourInput = makeInput('number','very-small', prefill['rep_colour_fin'] ?? '', 'Repair Colour');
-                row.appendChild(repColourInput);
-                const repLightInput = makeInput('number','very-small', prefill['rep_light_pass'] ?? '', 'Repair Light');
-                row.appendChild(repLightInput);
-                const repOkQtyInput = makeInput('number','very-small', prefill['rep_ok_qty'] ?? '', 'Repair OK Qty');
-                repOkQtyInput.readOnly = true;
-                row.appendChild(repOkQtyInput);
-                row.appendChild(makeInput('text','small', prefill['rework_person'] ?? '', 'Rework Person'));
-                const painterSignInput = makeInput('text','small', prefill['painter_sign'] ?? '', 'Painter Sign');
-                painterSignInput.readOnly = true;
-                row.appendChild(painterSignInput);
-                row.appendChild(makeInput('number','very-small', prefill['rej_dust'] ?? '', 'Rejection Dust'));
-                row.appendChild(makeInput('number','very-small', prefill['rej_scratch'] ?? '', 'Rejection Scratch'));
-                row.appendChild(makeInput('number','very-small', prefill['rej_dent'] ?? '', 'Rejection Dent'));
-                row.appendChild(makeInput('number','very-small', prefill['rej_less_paint'] ?? '', 'Rejection Less'));
-                row.appendChild(makeInput('number','very-small', prefill['rej_cut_mark'] ?? '', 'Rejection Cut'));
-                row.appendChild(makeInput('number','very-small', prefill['rej_paint_flow'] ?? '', 'Rejection Flow'));
-                row.appendChild(makeInput('text','small', prefill['qc_sign'] ?? '', 'Quality Checker Sign'));
-                const sel = makeInput('select','small', prefill['judgement'] ?? '', 'judgement', [{value:'',label:''},{value:'OK',label:'OK'},{value:'NG',label:'NG'}]);
-                row.appendChild(sel);
-                row.appendChild(makeInput('text','small', prefill['line_leader'] ?? '', 'Quality Line Leader Sign'));
-                const delBtn = document.createElement('button'); 
-                delBtn.type='button'; 
-                delBtn.className='btn warn action-btn'; 
-                delBtn.title='Remove row'; 
-                delBtn.innerHTML='<i class="fa-solid fa-trash"></i>';
-                delBtn.addEventListener('click', () => { row.remove(); updateNavInputs(); });
-                row.appendChild(delBtn);
-                function updateRepOkQty() {
-                const mc = parseFloat(mcInput.value) || 0;
-                const dust = parseFloat(repDustInput.value) || 0;
-                const scratch = parseFloat(repScratchInput.value) || 0;
-                const less = parseFloat(repLessInput.value) || 0;
-                const colour = parseFloat(repColourInput.value) || 0;
-                const light = parseFloat(repLightInput.value) || 0;
-                const total = mc + dust + scratch + less + colour + light;
-                repOkQtyInput.value = total;
-                console.log('Repair OK Qty updated to:', total);
-                }
-                [mcInput, repDustInput, repScratchInput, repLessInput, repColourInput, repLightInput].forEach(input => {
-                input.addEventListener('input', updateRepOkQty);
-                console.log('Event listener added to:', input);
-                });
-                updateRepOkQty();
-                console.log('Row element created successfully');
-                return row;
-            } catch (error) {
-                console.error('Error creating row element:', error);
-                return null;
-            }   
-        }
-        function addRow(prefill = {}){
-            const el = createRowElement(prefill); 
-            entriesContainer.appendChild(el); 
-            updateNavInputs(); 
-            const inputs = el.querySelectorAll('input, select'); 
-            if (inputs[0]) inputs[0].focus(); 
-        }
+          const row = document.createElement('div'); row.className = 'entry-row';
+          row.appendChild(makeInput('number','very-small', prefill['lot_qty'] ?? '', 'Lot Qty'));
+          row.appendChild(makeInput('number','very-small', prefill['total_ok'] ?? '', 'Total Ok Qty'));
+          row.appendChild(makeInput('number','very-small', prefill['moulding_chemical'] ?? '', 'M/C'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_dust'] ?? '', 'Repair Dust'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_scratch'] ?? '', 'Repair Scratch'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_less_paint'] ?? '', 'Repair Less'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_colour_fin'] ?? '', 'Repair Colour'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_light_pass'] ?? '', 'Repair Light'));
+          row.appendChild(makeInput('number','very-small', prefill['rep_ok_qty'] ?? '', 'Repair OK Qty'));
+          row.appendChild(makeInput('text','small', prefill['rework_person'] ?? '', 'Rework Person'));
+          row.appendChild(makeInput('text','small', prefill['painter_sign'] ?? '', 'Painter Sign'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_dust'] ?? '', 'Rejection Dust'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_scratch'] ?? '', 'Rejection Scratch'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_dent'] ?? '', 'Rejection Dent'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_less_paint'] ?? '', 'Rejection Less'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_cut_mark'] ?? '', 'Rejection Cut'));
+          row.appendChild(makeInput('number','very-small', prefill['rej_paint_flow'] ?? '', 'Rejection Flow'));
+          row.appendChild(makeInput('text','small', prefill['qc_sign'] ?? '', 'Quality Checker Sign'));
+          const sel = makeInput('select','small', prefill['judgement'] ?? '', 'judgement', [{value:'',label:''},{value:'OK',label:'OK'},{value:'NG',label:'NG'}]);
+          row.appendChild(sel);
+          row.appendChild(makeInput('text','small', prefill['line_leader'] ?? '', 'Quality Line Leader Sign'));
+          const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.className='btn warn action-btn'; delBtn.title='Remove row'; delBtn.innerHTML='<i class="fa-solid fa-trash"></i>';
+          delBtn.addEventListener('click', () => { row.remove(); updateNavInputs(); });
+          row.appendChild(delBtn);
+          return row;
+        }
+        function addRow(prefill = {}){ const el = createRowElement(prefill); entriesContainer.appendChild(el); updateNavInputs(); const inputs = el.querySelectorAll('input, select'); if (inputs[0]) inputs[0].focus(); }
         addRow();
         addRowBtn.addEventListener('click', () => addRow());
         clearRowsBtn.addEventListener('click', () => { if (!confirm('Clear all entry rows?')) return; entriesContainer.innerHTML = ''; addRow(); });
@@ -369,6 +354,7 @@
         window.updateNavInputs = updateNavInputs;
         function readEntriesFromStorage(){ const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw) || []; } catch(e){ return []; } }
         function writeEntriesToStorage(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+        // REPLACED saveBtn.addEventListener('click', ...) WITH saveAllRowsToAPI
         function parseNumber(v){ if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
         previewBtn.addEventListener('click', () => {
           const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
@@ -415,14 +401,14 @@
                     line_leader: inputs[i++].value ,
                 };
                 try {
-                    let res = await fetch("/api/entries/",{
+                    let res = await fetch("/api/entries/", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload)
                     });
                     if (!res.ok) throw new Error("Error saving row");
                 } catch (err) {
-                    console.error("Save failed:", err);                                
+                    console.error("Save failed:", err);
                     alert("Error while saving data.");
                     return;
                 }
@@ -430,6 +416,7 @@
             alert("All rows saved to server!");
         }
         saveBtn.addEventListener('click', saveAllRowsToAPI);
+        /* Month / Table rendering */
         function buildTableHtml(entries){
           if (!entries.length) return '<div class="small">No records.</div>';
           let html = '<table id="dataTable"><thead><tr>';
@@ -438,7 +425,7 @@
             'Rep Dust','Rep Scratch','Rep Less','Rep Colour','Rep Light','Rep OK',
             'Rework Person','Painter Sign',
             'Rej Dust','Rej Scratch','Rej Dent','Rej Less','Rej Cut','Rej Flow',
-            'QC Sign','Judgement','Line Leader','Action'
+            'QC Sign','Judgement','Line Leader'
           ];
           heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
           html += '</tr></thead><tbody>';
@@ -468,8 +455,7 @@
               en.rej_paint_flow ?? '',
               en.qc_sign ?? '',
               en.judgement ?? '',
-              en.line_leader ?? '',
-              en.action ?? ''
+              en.line_leader ?? ''
             ];
             row.forEach(c => html += `<td>${escapeHtml(c)}</td>`);
           });
@@ -490,8 +476,10 @@
             }
         }
         loadBtn.addEventListener('click', loadDataFromAPI);
+        /* Attach search functionality (menuSearch) */
         if (menuSearch){ menuSearch.addEventListener('keyup', function(){ const q = this.value.toLowerCase(); const table = document.getElementById('dataTable'); if (!table) return; const rows = table.querySelectorAll('tbody tr'); rows.forEach(r => { const text = r.innerText.toLowerCase(); r.style.display = text.includes(q) ? '' : 'none'; }); }); }
         if (menuSearchBtn){ menuSearchBtn.addEventListener('click', function(){ if (menuSearch) menuSearch.dispatchEvent(new Event('keyup')); }); }
+        /* Export handlers for range */
         exportExcelBtn.addEventListener('click', () => {
           const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
           const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
@@ -506,7 +494,7 @@
         });
         function exportEntriesToExcel(entries, filenamePrefix) {
           const aoa = [];
-          aoa.push(["Sri Sai Markers & Engravers"]);    
+          aoa.push(["Sri Sai Markers & Engravers"]);
           aoa.push(["Painter Production Sheet"]);
           aoa.push([]);
           const table = document.getElementById("dataTable");
@@ -525,8 +513,7 @@
     const revisionTableElement = document.getElementById("revisionTableTemplate"); 
     if (!mainTemplateTable || !dataTable || !revisionTableElement) {
         console.error("Required HTML elements are missing: #productionSheet, #dataTable, or #revisionTableTemplate.");
-        //return alert("Error: PDF generation failed because necessary HTML structure is missing.");
-        return alert("Error: PDF are not generated before Clicking the Load Data Button.");
+        return alert("Error: PDF generation failed because necessary HTML structure is missing.");
     }
     const dataBodyRows = Array.from(dataTable.querySelectorAll("tbody tr"));
     const templateTbody = mainTemplateTable.querySelector('tbody');
@@ -537,11 +524,11 @@
     const pdf = new jsPDF("l", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 2;
+    const margin = 8;
     const boxX = margin;
     const boxWidth = pageWidth - margin * 2;
-    const HEADER_HEIGHT = 25; 
-    const FOOTER_REVISION_HEIGHT = 40; 
+    const HEADER_HEIGHT = 30; 
+    const FOOTER_REVISION_HEIGHT = 20; 
     const logoPromise = new Promise((resolve) => {
         const logo = new Image();
         logo.src = "/static/logo.png";
@@ -555,24 +542,24 @@
         pdf.setLineWidth(0.5);
         pdf.rect(boxX, margin, boxWidth, pageHeight - margin * 2);
         if (logo) {
-            pdf.addImage(logo, "PNG", boxX + 5, margin + 2, 18, 18);
+            pdf.addImage(logo, "PNG", boxX + 5, margin + 5, 18, 18);
         }
-        pdf.setFontSize(15);
+        pdf.setFontSize(16);
         pdf.setFont("helvetica", "bold");
-        pdf.text("SRI SAI MARKERS & ENGRAVERS", pageWidth / 2, margin + 8, { align: "center" });
-        pdf.setFontSize(9);
+        pdf.text("SRI SAI MARKERS & ENGRAVERS", pageWidth / 2, margin + 10, { align: "center" });
+        pdf.setFontSize(10);
+        pdf.setFont("helvetica", "normal");
+        pdf.text("PAINTER PRODUCTION SHEET", pageWidth / 2, margin + 18, { align: "center" });
+        pdf.setFontSize(8);
         pdf.setFont("helvetica", "bold");
-        pdf.text("PAINTER PRODUCTION SHEET", pageWidth / 2, margin + 16, { align: "center" });
-        pdf.setFontSize(7);
-        pdf.setFont("helvetica", "bold");
-        pdf.text(`Format No.:- F-SSME-58`, boxX + boxWidth - 2, margin + 6, { align: "right" });
-        pdf.text(`Revision No.:- 10`, boxX + boxWidth - 2, margin + 10, { align: "right" });
-        pdf.text(`Issue Date :- 17.11.2017`, boxX + boxWidth - 2, margin + 14, { align: "right" });
-        pdf.text(`Rev Date :- 31.03.2023`, boxX + boxWidth - 2, margin + 18, { align: "right" });
-        pdf.text(`Responsibility :- Quality Checker`, boxX + boxWidth - 2, margin + 22, { align : "right"});
+        pdf.text(`Format No.:- F-SSME-58`, boxX + boxWidth - 2, margin + 8, { align: "right" });
+        pdf.text(`Revision No.:- 10`, boxX + boxWidth - 2, margin + 12, { align: "right" });
+        pdf.text(`Issue Date :- 17.11.2017`, boxX + boxWidth - 2, margin + 16, { align: "right" });
+        pdf.text(`Rev Date :- 31.03.2023`, boxX + boxWidth - 2, margin + 20, { align: "right" });
+        pdf.text(`Responsibility :- Quality Checker`, boxX + boxWidth - 2, margin + 24, { align : "right"});
     };
     const addRevisionFooter = () => {
-        const footerY = pageHeight - FOOTER_REVISION_HEIGHT; 
+        const footerY = pageHeight - margin - FOOTER_REVISION_HEIGHT; 
         pdf.autoTable({
             html: revisionTableElement,
             startY: footerY,
@@ -596,74 +583,56 @@
             addRevisionFooter();
         },
         pageBreak: 'auto',
-        margin: { bottom: 0, left: boxX + 1, right: margin + 1 }
+        margin: { bottom: 25, left: boxX + 1, right: margin + 1 } 
     });
     templateTbody.innerHTML = '';
     pdf.save(`PainterRecords.pdf`);
 }
         function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
         function getLocation() {
-    const locationDisplay = document.getElementById('displayLocation');
-    const locationInput = document.getElementById('hdr_location');
-    
-    // IMPORTANT: Make sure these are the correct coordinates for your sites
-    const TARGET_LOCATIONS = [
-        { name: "Plot No- 71", lat: 28.4491776, lon: 77.053952 },
-        { name: "Plot No- 545", lat: 30.7333, lon: 76.7794 }, 
-        { name: "Aastha", lat: 18.5204, lon: 73.8567 }    
-    ];
-    
-    // Increased tolerance for testing. Set back to 1.0 or 0.5 once successful.
-    const GPS_TOLERANCE_KM = 10.0; 
-
-    if (locationDisplay) locationDisplay.textContent = "Getting GPS...";
-    if (locationInput) locationInput.value = "";
-
-    // Haversine formula to calculate distance between two coordinates
-    function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Radius of Earth in kilometers
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = 
-            0.5 - Math.cos(dLat) / 2 + 
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (0.5 - Math.cos(dLon) / 2);
-        return R * 2 * Math.asin(Math.sqrt(a));
-    }
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
+            const locationDisplay = document.getElementById('displayLocation');
+            const locationInput = document.getElementById('hdr_location');
+            const TARGET_LOCATIONS = [
+                { name: "Plot No- 71", lat: 28.4491776, lon: 77.053952 },
+                { name: "Plot No- 545", lat: 30.7333, lon: 76.7794 }, 
+                { name: "Aastha", lat: 18.5204, lon: 73.8567 }    
+            ];
+            const GPS_TOLERANCE_KM = 1.0; 
+            if (locationDisplay) locationDisplay.textContent = "Getting GPS...";
+            if (locationInput) locationInput.value = "";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                (position) => {
                 const userLat = position.coords.latitude;
                 const userLon = position.coords.longitude;
-                let foundLocation = "Unknown Location";
-                
-                // *** DEBUGGING STEP: Check console for these values ***
+                let foundLocation = "Plot No- 71";
                 console.log(`User Coords: Lat ${userLat}, Lon ${userLon}`);
-                console.log(`Tolerance set to: ${GPS_TOLERANCE_KM} km`);
-
+                function getDistance(lat1, lon1, lat2, lon2) {
+                    const R = 6371;
+                    const dLat = (lat2 - lat1) * Math.PI / 180;
+                    const dLon = (lon2 - lon1) * Math.PI / 180;
+                    const a = 0.5 - Math.cos(dLat)/2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (0.5 - Math.cos(dLon)/2);
+                    return R * 2 * Math.asin(Math.sqrt(a));
+                }
                 for (const target of TARGET_LOCATIONS) {
                     const distance = getDistance(userLat, userLon, target.lat, target.lon);
-                    
-                    // *** DEBUGGING STEP: Check console for these distance results ***
-                    console.log(`Distance to ${target.name} (Target: ${target.lat}, ${target.lon}): ${distance.toFixed(3)} km`);
-
+                    console.log(`Distance to ${target.name}: ${distance.toFixed(3)} km`);
                     if (distance <= GPS_TOLERANCE_KM) {
                         foundLocation = target.name;
                         break;
                     }
                 }
-                
                 const locationText = foundLocation;
                 if (locationDisplay) locationDisplay.textContent = locationText;
                 if (locationInput) locationInput.value = locationText;
             },
             (error) => {
-                const errorText = error.code === error.PERMISSION_DENIED ? "Location Denied" : "GPS Error";
+                const errorText = "Location Denied";
                 if (locationDisplay) locationDisplay.textContent = errorText;
                 if (locationInput) locationInput.value = errorText;
-                console.error("Geolocation Error:", error.message, "Code:", error.code);
+                console.error("Geolocation Error:", error.message);
             },
-            { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 } 
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } 
         );
     } else {
         const errorText = "Geo Not Supported";

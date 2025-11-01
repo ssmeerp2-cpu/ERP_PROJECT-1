@@ -1,62 +1,329 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Paint Stirring Sheet</title>
-<!-- icons & libs -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-<style>
-  :root{ --blue:#2b6ea3; --muted:#6d6d6d; --bg:#f4f6f8; --panel:#fff; }
-  body{ font-family:Segoe UI, Arial, sans-serif; background:var(--bg); margin:18px; color:#222; }
-  :root {--purple: #9c4aa7;--purple-dark: #7f3b8b;--accent-yellow: #f6c21e;--btn-blue: #1f78a3;--btn-orange: #f2a33c;--card-border: #1080b2;--header-height: 50px;--radius: 6px;font-family:"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;}
-  body {margin: 0;background: #fff;color: #333;padding: 5px 12px;}
-  .topbar {background: linear-gradient(180deg, var(--purple) 0%, #8d4d91 100%);color: white;border-radius: 6px;display: flex;align-items: center;height: var(--header-height);padding: 0 9px;box-sizing: border-box;border: 2px solid rgba(0, 0, 0, 0.05);box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);}
-  .top-left, .top-center, .top-right {display: flex;align-items: center;gap: 12px;}
-  .top-left {min-width: 260px;}
-  .top-center {flex: 1;justify-content: center;}
-  .top-right {min-width: 320px;justify-content: flex-end;}
-  .company {font-weight: 400;font-size: 20px;padding: 0 18px;border-right: 2px solid rgba(255, 255, 255, 0.12);height: 100%;display: flex;align-items: center;}
-  .erp-menu {padding: 0 16px;font-weight: 300;height: 100%;display: flex;align-items: center;margin-left: 8px;}
-  .menu-title {color: var(--accent-yellow);font-size: 22px;font-weight: 500;letter-spacing: 0.6px;}
-  .search-box {display: flex;align-items: center;background: rgba(255, 255, 255, 0.95);padding: 6px 8px;border-radius: 4px;margin-right: 12px;height: 34px;}
-  .search-box input {border: 0;outline: 0;width: 140px;font-size: 14px;}
-  .search-box button {border: 0;background: transparent;padding: 0 6px;cursor: pointer;}
-  .user-area {font-size: 14px;font-weight: 500;}
-  .change-user {font-size: 14px;font-weight: 300;text-decoration: underline;cursor: pointer;}
-  .change-user:hover {color: #ddd;}
-  .wrap{ max-width:1200px; margin:10px auto; }
-  .panel{ background:var(--panel); border:2px solid var(--blue); border-radius:8px; padding:14px; box-sizing:border-box; width:100%; margin-bottom:16px; }
-  h2{ margin:4px 0 12px 0; color:var(--blue); }
-  .form-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:12px; }
-  label{ display:block; font-weight:700; color:var(--blue); font-size:13px; margin-bottom:6px; }
-  input[type="text"], input[type="date"], input[type="number"], select { padding:8px 10px; border-radius:6px; border:1px solid #cfcfcf; width:100%; box-sizing:border-box; }
-  textarea{ width:100%; padding:8px; border-radius:6px; border:1px solid #cfcfcf; box-sizing:border-box; resize:vertical; }
-  .controls{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center; }
-  .btn{ display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:700; border:0; }
-  .btn.primary{ background:var(--blue); color:white; } .btn.warn{ background:#e55353; color:white; } .btn.ghost{ background:white; border:1px solid var(--blue); color:var(--blue); }
-  .small{ font-size:13px; color:var(--muted); }
-  #entriesContainer{ margin-top:12px; border:1px dashed #dbeaf5; padding:10px; border-radius:6px; background:#fbfdff; max-height:420px; overflow:auto; }
-  .entry-row{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-  .entry-row input, .entry-row select { padding:6px; font-size:13px; }
-  .very-small { width:200px; } .small { width:260px; }
-  table{ width:100%; border-collapse:collapse; margin-top:12px; }
-  th, td{ border:1px solid #e1eefb; padding:8px; text-align:left; font-size:13px; vertical-align:middle; }
-  th{ background:#f4fbff; color:var(--blue); font-weight:800; }
-  @media (max-width:980px){ .form-grid{ grid-template-columns: repeat(2, 1fr); } .entry-row{ flex-wrap:wrap; } }
-  @media (max-width:600px){ .form-grid{ grid-template-columns: 1fr; } .entry-row{ flex-direction:column; align-items:stretch; } }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Paint Stirring Sheet</title>
+  <!-- icons & libs -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root {
+      --blue: #2b6ea3;
+      --muted: #6d6d6d;
+      --bg: #f4f6f8;
+      --panel: #fff;
+    }
+
+    body {
+      font-family: Segoe UI, Arial, sans-serif;
+      background: var(--bg);
+      margin: 18px;
+      color: #222;
+    }
+
+    :root {
+      --purple: #9c4aa7;
+      --purple-dark: #7f3b8b;
+      --accent-yellow: #f6c21e;
+      --btn-blue: #1f78a3;
+      --btn-orange: #f2a33c;
+      --card-border: #1080b2;
+      --header-height: 50px;
+      --radius: 6px;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #fff;
+      color: #333;
+      padding: 5px 12px;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, var(--purple) 0%, #8d4d91 100%);
+      color: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 9px;
+      box-sizing: border-box;
+      border: 2px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .top-left,
+    .top-center,
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top-left {
+      min-width: 260px;
+    }
+
+    .top-center {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .top-right {
+      min-width: 320px;
+      justify-content: flex-end;
+    }
+
+    .company {
+      font-weight: 400;
+      font-size: 20px;
+      padding: 0 18px;
+      border-right: 2px solid rgba(255, 255, 255, 0.12);
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .erp-menu {
+      padding: 0 16px;
+      font-weight: 300;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+    }
+
+    .menu-title {
+      color: var(--accent-yellow);
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin-right: 12px;
+      height: 34px;
+    }
+
+    .search-box input {
+      border: 0;
+      outline: 0;
+      width: 140px;
+      font-size: 14px;
+    }
+
+    .search-box button {
+      border: 0;
+      background: transparent;
+      padding: 0 6px;
+      cursor: pointer;
+    }
+
+    .user-area {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .change-user {
+      font-size: 14px;
+      font-weight: 300;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .change-user:hover {
+      color: #ddd;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 10px auto;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 2px solid var(--blue);
+      border-radius: 8px;
+      padding: 14px;
+      box-sizing: border-box;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 4px 0 12px 0;
+      color: var(--blue);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      color: var(--blue);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #cfcfcf;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #cfcfcf;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      border: 0;
+    }
+
+    .btn.primary {
+      background: var(--blue);
+      color: white;
+    }
+
+    .btn.warn {
+      background: #e55353;
+      color: white;
+    }
+
+    .btn.ghost {
+      background: white;
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    #entriesContainer {
+      margin-top: 12px;
+      border: 1px dashed #dbeaf5;
+      padding: 10px;
+      border-radius: 6px;
+      background: #fbfdff;
+      max-height: 420px;
+      overflow: auto;
+    }
+
+    .entry-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .entry-row input,
+    .entry-row select {
+      padding: 6px;
+      font-size: 13px;
+    }
+
+    .very-small {
+      width: 200px;
+    }
+
+    .small {
+      width: 260px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th,
+    td {
+      border: 1px solid #e1eefb;
+      padding: 8px;
+      text-align: left;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f4fbff;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    @media (max-width:980px) {
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .entry-row {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width:600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .entry-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <header class="topbar" role="banner">
     <div class="top-left">
       <div class="company">SRI SAI</div>
       <div class="erp-menu">Plot No- 71</div>
     </div>
-    <div class="top-center"><div class="menu-title">Paint Stirring Sheet </div></div>
+    <div class="top-center">
+      <div class="menu-title">Paint Stirring Sheet </div>
+    </div>
     <div class="top-right">
       <div class="search-box" title="Search menu">
         <input id="menuSearch" type="search" placeholder="Search" aria-label="Menu search">
@@ -66,309 +333,310 @@
       <div class="change-user">Change User</div>
     </div>
   </header>
-<div class="wrap">
-  <div class="panel" id="entryPanel">
-    <h2>Paint Stirring Sheet</h2>
-    <div class="form-grid" id="headerForm">
-      <div>
-        <label>Date</label>
-        <input id="hdr_date" type="date" readonly>
+  <div class="wrap">
+    <div class="panel" id="entryPanel">
+      <h2>Paint Stirring Sheet</h2>
+      <div class="form-grid" id="headerForm">
+        <div>
+          <label>Date</label>
+          <input id="hdr_date" type="date" readonly>
+        </div>
+        <div>
+          <label>Paint Name</label>
+          <input id="hdr_paint_name" type="text" placeholder="Paint Name">
+        </div>
+        <div>
+          <label>Paint Code</label>
+          <input id="hdr_paint_code" type="text" placeholder="Paint Code">
+        </div>
+        <div>
+          <label>Batch Code</label>
+          <input id="hdr_batch_code" type="text" placeholder="Batch Code">
+        </div>
       </div>
-      <div>
-        <label>Paint Name</label>
-        <input id="hdr_paint_name" type="text" placeholder="Paint Name">
+      <div class="controls" style="margin-top:8px;">
+        <button class="btn ghost" id="addRowBtn"><i class="fa-solid fa-plus"></i> Add Row</button>
+        <button class="btn ghost" id="clearRowsBtn"><i class="fa-solid fa-trash"></i> Clear Rows</button>
+        <div style="flex:1"></div>
+        <button class="btn primary" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Save All Rows</button>
+        <button class="btn ghost" id="previewBtn"><i class="fa-regular fa-eye"></i> Preview</button>
       </div>
-      <div>
-        <label>Paint Code</label>
-        <input id="hdr_paint_code" type="text" placeholder="Paint Code">
+      <div id="entriesContainer" aria-live="polite"></div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <h2>Download & Export</h2>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <label style="font-weight:700; color:var(--blue);">From:</label>
+        <input type="date" id="fromDate" />
+        <label style="font-weight:700; color:var(--blue);">To:</label>
+        <input type="date" id="toDate" />
+        <button class="btn ghost" id="loadBtn">Load Data</button>
+        <button class="btn ghost" id="exportExcel">Export Excel</button>
+        <button class="btn ghost" id="exportPDF">Export PDF</button>
+        <div style="flex:1"></div>
       </div>
-      <div>
-        <label>Batch Code</label>
-        <input id="hdr_batch_code" type="text" placeholder="Batch Code">
+      <div id="monthResult" style="overflow-x:auto; max-width:100%; margin-top:12px;">
+        <div class="small">No data loaded.</div>
       </div>
     </div>
-    <div class="controls" style="margin-top:8px;">
-      <button class="btn ghost" id="addRowBtn"><i class="fa-solid fa-plus"></i> Add Row</button>
-      <button class="btn ghost" id="clearRowsBtn"><i class="fa-solid fa-trash"></i> Clear Rows</button>
-      <div style="flex:1"></div>
-      <button class="btn primary" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Save All Rows</button>
-      <button class="btn ghost" id="previewBtn"><i class="fa-regular fa-eye"></i> Preview</button>
-    </div>
-    <div id="entriesContainer" aria-live="polite"></div>
   </div>
-  <div class="panel" style="margin-top:16px;">
-    <h2>Download & Export</h2>
-    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-      <label style="font-weight:700; color:var(--blue);">From:</label>
-      <input type="date" id="fromDate" />
-      <label style="font-weight:700; color:var(--blue);">To:</label>
-      <input type="date" id="toDate" />
-      <button class="btn ghost" id="loadBtn">Load Data</button>
-      <button class="btn ghost" id="exportExcel">Export Excel</button>
-      <button class="btn ghost" id="exportPDF">Export PDF</button>
-      <div style="flex:1"></div>
-    </div>
-    <div id="monthResult" style="overflow-x:auto; max-width:100%; margin-top:12px;">
-      <div class="small">No data loaded.</div>
-    </div>
-  </div>
-</div>
-<script>
-const STORAGE_KEY = 'paint_stirring_records_v2_fixed';
-const entriesContainer = document.getElementById('entriesContainer');
-const addRowBtn = document.getElementById('addRowBtn');
-const clearRowsBtn = document.getElementById('clearRowsBtn');
-const saveBtn = document.getElementById('saveBtn');
-const previewBtn = document.getElementById('previewBtn');
-const loadBtn = document.getElementById('loadBtn');
-const exportExcelBtn = document.getElementById('exportExcel');
-const exportPDFBtn = document.getElementById('exportPDF');
-const menuSearch = document.getElementById('menuSearch');
-const menuSearchBtn = document.getElementById('menuSearchBtn');
-const rowColumns = [
-  'date','paint_name','paint_code','batch_code',
-  'pkg_size','pkg_refrence','expiry_date','air_pressure',
-  'start_time','end_time','done_by','judgement','verify_by','remarks'
-];
-function makeInput(type, cls, value, placeholder, options){
-  let el;
-  if (type === 'select'){
-    el = document.createElement('select');
-    (options||[]).forEach(opt => { const o = document.createElement('option'); o.value = opt.value; o.text = opt.label; el.appendChild(o); });
-    el.value = value || '';
-  } else {
-    el = document.createElement('input'); el.type = type || 'text'; if (value !== undefined && value !== null) el.value = value; if (placeholder) el.placeholder = placeholder;
-  }
-  if (cls) el.classList.add(cls);
-  el.addEventListener('keydown', navKeyHandler);
-  return el;
-}
-function createRowElement(prefill = {}){
-  const row = document.createElement('div'); row.className = 'entry-row';
-  row.appendChild(makeInput('number','very-small', prefill['pkg_size'] ?? '', 'pkg_size'));
-  row.appendChild(makeInput('text','small', prefill['pkg_refrence'] ?? '', 'Pkg Refrence'));
-  row.appendChild(makeInput('text','small', prefill['expiry_date'] ?? '', 'Expiry Date'));
-  row.appendChild(makeInput('text','small', prefill['air_pressure'] ?? '', 'Air Pressure'));
-  row.appendChild(makeInput('time','very-small', prefill['start_time'] ?? '', 'Start Time'));
-  row.appendChild(makeInput('time','very-small', prefill['end_time'] ?? '', 'End Time'));
-  row.appendChild(makeInput('text','very-small', prefill['done_by'] ?? '', 'Done_by'));
-  const sel = makeInput('select','small', prefill['judgement'] ?? '', 'Judgement', [{value:'',label:''},{value:'OK',label:'OK'},{value:'NG',label:'NG'}]);
-  row.appendChild(sel);
-  row.appendChild(makeInput('text','small', prefill['verify_by'] ?? '', 'Verify By'));
-  row.appendChild(makeInput('text','small', prefill['remarks'] ?? '', 'Remarks'));
-  const delBtn = document.createElement('button'); delBtn.type='button'; delBtn.className='btn warn action-btn'; delBtn.title='Remove row'; delBtn.innerHTML='<i class="fa-solid fa-trash"></i>';
-  delBtn.addEventListener('click', () => { row.remove(); updateNavInputs(); });
-  row.appendChild(delBtn);
-  return row;
-}
-function addRow(prefill = {}){ const el = createRowElement(prefill); entriesContainer.appendChild(el); updateNavInputs(); const inputs = el.querySelectorAll('input, select'); if (inputs[0]) inputs[0].focus(); }
-addRow();
-addRowBtn.addEventListener('click', () => addRow());
-clearRowsBtn.addEventListener('click', () => { if (!confirm('Clear all entry rows?')) return; entriesContainer.innerHTML = ''; addRow(); });
-function collectNavInputs(){ return Array.from(entriesContainer.querySelectorAll('input, select')); }
-function navKeyHandler(e){ const inputs = collectNavInputs(); const idx = inputs.indexOf(e.target); if (e.key === 'ArrowRight'){ e.preventDefault(); if (idx>=0 && idx < inputs.length-1) inputs[idx+1].focus(); } else if (e.key === 'ArrowLeft'){ e.preventDefault(); if (idx>0) inputs[idx-1].focus(); } else if (e.key === 'Enter'){ e.preventDefault(); if (idx>=0 && idx < inputs.length-1) inputs[idx+1].focus(); } }
-function updateNavInputs(){ const inputs = collectNavInputs(); inputs.forEach(inp => { inp.removeEventListener('keydown', navKeyHandler); inp.addEventListener('keydown', navKeyHandler); }); }
-window.updateNavInputs = updateNavInputs;
-function readEntriesFromStorage(){ const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw) || []; } catch(e){ return []; } }
-function writeEntriesToStorage(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-        function parseNumber(v){ if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
-        previewBtn.addEventListener('click', () => {
-          const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-          if (!rows.length) { alert('No rows to preview'); return; }
-          const lines = [];
-          rows.forEach((r, idx) => { const inputs = Array.from(r.querySelectorAll('input, select')); const arr = inputs.map(inp => inp.value); lines.push(`${idx+1}. ${arr.join(' | ')}`); });
-          alert(lines.join('\n\n'));
-});
-async function saveAllRowsToAPI() {
-    const headerDate = document.getElementById('hdr_date').value;
-    if (!headerDate) { alert('Select Date in header before saving.'); return; }
-    const headerPaintName = document.getElementById('hdr_paint_name').value || '';
-    const headerPaintCode = document.getElementById('hdr_paint_code').value || '';
-    const headerBatchCode = document.getElementById('hdr_batch_code').value || '';
-    const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
-    if (!rows.length) { alert('No rows to save.'); return; }
-    for (let r of rows) {
+  <script>
+    const STORAGE_KEY = 'paint_stirring_records_v2_fixed';
+    const entriesContainer = document.getElementById('entriesContainer');
+    const addRowBtn = document.getElementById('addRowBtn');
+    const clearRowsBtn = document.getElementById('clearRowsBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const loadBtn = document.getElementById('loadBtn');
+    const exportExcelBtn = document.getElementById('exportExcel');
+    const exportPDFBtn = document.getElementById('exportPDF');
+    const menuSearch = document.getElementById('menuSearch');
+    const menuSearchBtn = document.getElementById('menuSearchBtn');
+    const rowColumns = [
+      'date', 'paint_name', 'paint_code', 'batch_code',
+      'pkg_size', 'pkg_reference', 'expiry_date', 'air_pressure',
+      'start_time', 'end_time', 'done_by', 'judgement', 'verify_by', 'remarks'
+    ];
+    function makeInput(type, cls, value, placeholder, options) {
+      let el;
+      if (type === 'select') {
+        el = document.createElement('select');
+        (options || []).forEach(opt => { const o = document.createElement('option'); o.value = opt.value; o.text = opt.label; el.appendChild(o); });
+        el.value = value || '';
+      } else {
+        el = document.createElement('input'); el.type = type || 'text'; if (value !== undefined && value !== null) el.value = value; if (placeholder) el.placeholder = placeholder;
+      }
+      if (cls) el.classList.add(cls);
+      el.addEventListener('keydown', navKeyHandler);
+      return el;
+    }
+    function createRowElement(prefill = {}) {
+      const row = document.createElement('div'); row.className = 'entry-row';
+      row.appendChild(makeInput('number', 'very-small', prefill['pkg_size'] ?? '', 'pkg_size'));
+      row.appendChild(makeInput('text', 'small', prefill['pkg_reference'] ?? '', 'Pkg Reference'));
+      row.appendChild(makeInput('text', 'small', prefill['expiry_date'] ?? '', 'Expiry Date'));
+      row.appendChild(makeInput('text', 'small', prefill['air_pressure'] ?? '', 'Air Pressure'));
+      row.appendChild(makeInput('time', 'very-small', prefill['start_time'] ?? '', 'Start Time'));
+      row.appendChild(makeInput('time', 'very-small', prefill['end_time'] ?? '', 'End Time'));
+      row.appendChild(makeInput('text', 'very-small', prefill['done_by'] ?? '', 'Done_by'));
+      const sel = makeInput('select', 'small', prefill['judgement'] ?? '', 'Judgement', [{ value: '', label: '' }, { value: 'OK', label: 'OK' }, { value: 'NG', label: 'NG' }]);
+      row.appendChild(sel);
+      row.appendChild(makeInput('text', 'small', prefill['verify_by'] ?? '', 'Verify By'));
+      row.appendChild(makeInput('text', 'small', prefill['remarks'] ?? '', 'Remarks'));
+      const delBtn = document.createElement('button'); delBtn.type = 'button'; delBtn.className = 'btn warn action-btn'; delBtn.title = 'Remove row'; delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+      delBtn.addEventListener('click', () => { row.remove(); updateNavInputs(); });
+      row.appendChild(delBtn);
+      return row;
+    }
+    function addRow(prefill = {}) { const el = createRowElement(prefill); entriesContainer.appendChild(el); updateNavInputs(); const inputs = el.querySelectorAll('input, select'); if (inputs[0]) inputs[0].focus(); }
+    addRow();
+    addRowBtn.addEventListener('click', () => addRow());
+    clearRowsBtn.addEventListener('click', () => { if (!confirm('Clear all entry rows?')) return; entriesContainer.innerHTML = ''; addRow(); });
+    function collectNavInputs() { return Array.from(entriesContainer.querySelectorAll('input, select')); }
+    function navKeyHandler(e) { const inputs = collectNavInputs(); const idx = inputs.indexOf(e.target); if (e.key === 'ArrowRight') { e.preventDefault(); if (idx >= 0 && idx < inputs.length - 1) inputs[idx + 1].focus(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); if (idx > 0) inputs[idx - 1].focus(); } else if (e.key === 'Enter') { e.preventDefault(); if (idx >= 0 && idx < inputs.length - 1) inputs[idx + 1].focus(); } }
+    function updateNavInputs() { const inputs = collectNavInputs(); inputs.forEach(inp => { inp.removeEventListener('keydown', navKeyHandler); inp.addEventListener('keydown', navKeyHandler); }); }
+    window.updateNavInputs = updateNavInputs;
+    function readEntriesFromStorage() { const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return []; try { return JSON.parse(raw) || []; } catch (e) { return []; } }
+    function writeEntriesToStorage(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+    function parseNumber(v) { if (v === '' || v === null || v === undefined) return ''; const n = Number(v); return Number.isFinite(n) ? n : ''; }
+    previewBtn.addEventListener('click', () => {
+      const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
+      if (!rows.length) { alert('No rows to preview'); return; }
+      const lines = [];
+      rows.forEach((r, idx) => { const inputs = Array.from(r.querySelectorAll('input, select')); const arr = inputs.map(inp => inp.value); lines.push(`${idx + 1}. ${arr.join(' | ')}`); });
+      alert(lines.join('\n\n'));
+    });
+    async function saveAllRowsToAPI() {
+      const headerDate = document.getElementById('hdr_date').value;
+      if (!headerDate) { alert('Select Date in header before saving.'); return; }
+      const headerPaintName = document.getElementById('hdr_paint_name').value || '';
+      const headerPaintCode = document.getElementById('hdr_paint_code').value || '';
+      const headerBatchCode = document.getElementById('hdr_batch_code').value || '';
+      const rows = Array.from(entriesContainer.querySelectorAll('.entry-row'));
+      if (!rows.length) { alert('No rows to save.'); return; }
+      for (let r of rows) {
         const inputs = Array.from(r.querySelectorAll('input, select'));
         let i = 0;
         const payload = {
-            date: headerDate,
-            paint_name: headerPaintName,
-            paint_code: headerPaintCode,
-            batch_code: headerBatchCode,
-            pkg_size: parseInt(inputs[i++].value),
-            pkg_refrence: inputs[i++].value || '',
-            expiry_date: inputs[i++].value || '',
-            air_pressure: inputs[i++].value || '',
-            start_time: inputs[i++].value || '',
-            end_time: inputs[i++].value || '',
-            done_by: inputs[i++].value || '',
-            judgement: inputs[i++].value || '',
-            verify_by: inputs[i++].value || '',
-            remarks: inputs[i++].value || '',
+          date: headerDate,
+          paint_name: headerPaintName,
+          paint_code: headerPaintCode,
+          batch_code: headerBatchCode,
+          pkg_size: parseInt(inputs[i++].value) || 0,
+          pkg_refrence: parseInt(inputs[i++].value) || 0,
+          expiry_date: new Date(inputs[i++].value),
+          air_pressure: parseFloat(inputs[i++].value) || 0,
+          start_time: inputs[i++].value || '00:00',
+          end_time: inputs[i++].value || '00:00',
+          done_by: inputs[i++].value,
+          judgement: inputs[i++].value,
+          verify_by: inputs[i++].value,
+          remarks: inputs[i++].value,
         };
         try {
-            let res = await fetch("/api/paint-stirring-entries/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            if (!res.ok) throw new Error("Error saving row");
+          let res = await fetch("/api/paint-stirring-entries/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error("Error saving row");
         } catch (err) {
-            console.error("Save failed:", err);
-            alert("Error while saving data.");
-            return;
+          console.error("Save failed:", err);
+          alert("Error while saving data.");
+          return;
         }
+      }
+      entriesContainer.innerHTML = '';
+      addRow();
+      alert("All rows saved to server!");
     }
-    entriesContainer.innerHTML = ''; 
-    addRow();
-    alert("All rows saved to server!");
-}
-saveBtn.addEventListener('click', saveAllRowsToAPI);
-/* Month / Table rendering */
-function buildTableHtml(entries){
-  if (!entries.length) return '<div class="small">No records.</div>';
-  let html = '<table id="dataTable"><thead><tr>';
-  const heads = [
-    'Date','paint_name','paint_code','batch_code',
-    'pkg_size','pkg_refrence','expiry_date','air_pressure',
-    'start_time','end_time','done_by','judgement','verify_by','remarks'
-  ];
-  heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
-  html += '</tr></thead><tbody>';
-  
-  entries.forEach(en => {
-    html += '<tr>';
-    const row = [
-      en.date || '',        
-      en.paint_name || '', 
-      en.paint_code || '',
-      en.batch_code || '',
-      en.pkg_size || '',
-      en.pkg_refrence || '',
-      en.expiry_date || '',
-      en.air_pressure || '',
-      en.start_time || '',
-      en.end_time || '',
-      en.done_by || '',
-      en.judgement || '',
-      en.verify_by || '',
-      en.remarks || ''
-    ];
-    row.forEach(c => html += `<td>${escapeHtml(c)}</td>`);
-  });
-  
-  html += '</tbody></table>';
-  return html;
-}
-async function loadDataFromAPI() {
-    const fromDate = document.getElementById('fromDate').value;
-    const toDate = document.getElementById('toDate').value;
-    if (!fromDate || !toDate) { alert("Please select both From and To dates"); return; }
-    try {
+    saveBtn.addEventListener('click', saveAllRowsToAPI);
+    /* Month / Table rendering */
+    function buildTableHtml(entries) {
+      if (!entries.length) return '<div class="small">No records.</div>';
+      let html = '<table id="dataTable"><thead><tr>';
+      const heads = [
+        'Date', 'paint_name', 'paint_code', 'batch_code',
+        'pkg_size', 'pkg_refrence', 'expiry_date', 'air_pressure',
+        'start_time', 'end_time', 'done_by', 'judgement', 'verify_by', 'remarks'
+      ];
+      heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
+      html += '</tr></thead><tbody>';
+
+      entries.forEach(en => {
+        html += '<tr>';
+        const row = [
+          en.date || '',
+          en.paint_name || '',
+          en.paint_code || '',
+          en.batch_code || '',
+          en.pkg_size || '',
+          en.pkg_refrence || '',
+          en.expiry_date || '',
+          en.air_pressure || '',
+          en.start_time || '',
+          en.end_time || '',
+          en.done_by || '',
+          en.judgement || '',
+          en.verify_by || '',
+          en.remarks || ''
+        ];
+        row.forEach(c => html += `<td>${escapeHtml(c)}</td>`);
+      });
+
+      html += '</tbody></table>';
+      return html;
+    }
+    async function loadDataFromAPI() {
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      if (!fromDate || !toDate) { alert("Please select both From and To dates"); return; }
+      try {
         let res = await fetch("/api/paint-stirring-entries/");
         if (!res.ok) throw new Error("API call failed with status: " + res.status);
         let data = await res.json();
         let filtered = data.filter(e => e.date >= fromDate && e.date <= toDate);
         document.getElementById('monthResult').innerHTML = buildTableHtml(filtered);
-    } catch (err) {
+      } catch (err) {
         console.error("Load failed:", err);
         alert("Error while loading data.");
+      }
     }
-}
-loadBtn.addEventListener('click', loadDataFromAPI);
-/* Attach search functionality (menuSearch) */
-if (menuSearch){ menuSearch.addEventListener('keyup', function(){ const q = this.value.toLowerCase(); const table = document.getElementById('dataTable'); if (!table) return; const rows = table.querySelectorAll('tbody tr'); rows.forEach(r => { const text = r.innerText.toLowerCase(); r.style.display = text.includes(q) ? '' : 'none'; }); }); }
-if (menuSearchBtn){ menuSearchBtn.addEventListener('click', function(){ if (menuSearch) menuSearch.dispatchEvent(new Event('keyup')); }); }
-/* Export handlers for range */
-exportExcelBtn.addEventListener('click', () => {
-  const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
-  const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
-  if (!entries.length) { alert('No records in range'); return; }
-  exportEntriesToExcel(entries, `${fromDate}_to_${toDate}`);
-});
-exportPDFBtn.addEventListener('click', () => {
-  const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate){ alert('Select From & To dates'); return; }
-  const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
-  if (!entries.length) { alert('No records in range'); return; }
-  exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
-});
-function exportEntriesToExcel(entries, filenamePrefix) {
-  const aoa = [];
-  aoa.push(["Sri Sai Markers & Engravers"]);
-  aoa.push(["Paint Stirring Sheet"]);
-  aoa.push([]);
-  const table = document.getElementById("dataTable");
-  if (!table) return alert("No table available!");
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(aoa);
-  const wsTable = XLSX.utils.table_to_sheet(table);
-  XLSX.utils.sheet_add_json(ws, XLSX.utils.sheet_to_json(wsTable), { origin: -1 });
-  XLSX.utils.book_append_sheet(wb, ws, "Paint Stirring Records");
-  XLSX.writeFile(wb, `PaintStirringRecords.xlsx`);
-}
-function exportEntriesToPDF(filenamePrefix) {
-  const table = document.getElementById("dataTable");
-  if (!table) return alert("No table available!");
-  const headers = [];
-  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
-  const body = [];
-  table.querySelectorAll("tbody tr").forEach(tr => {
-    const row = [];
-    tr.querySelectorAll("td").forEach(td => row.push(td.innerText));
-    body.push(row);
-  });
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("l", "mm", "a4");
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 8;
-  const boxX = margin;
-  const boxY = margin;
-  const boxWidth = pageWidth - margin * 2;
-  const boxHeight = pageHeight - margin * 2;
-  pdf.setDrawColor(0); 
-  pdf.setLineWidth(0.5);
-  pdf.rect(boxX, boxY, boxWidth, boxHeight);
-  const logo = new Image();
-  logo.src = "/static/logo.png"; 
-  logo.onload = function () {
-    const imgWidth = 18;
-    const imgHeight = 18;
-    const imgX = boxX + 5;
-    const imgY = boxY + 5;
-    pdf.addImage(logo, "PNG", imgX, imgY, imgWidth, imgHeight);
-  pdf.setFontSize(16);
-  pdf.text("Sri Sai Markers & Engravers", pageWidth / 2, boxY + 10, { align: "center" });
-  pdf.setFontSize(10);
-  pdf.text("Paint Stirring ", pageWidth / 2, boxY + 18, { align: "center" });
-  pdf.autoTable({
-    startY: boxY + 25,
-    head: [headers],
-    body: body,
-    styles: { fontSize: 8 },
-    headStyles: { fillColor: [43, 110, 163], textColor: 255 },
-    theme: "grid",
-    margin: { left: boxX + 2, right: margin + 2 },
-  });
-  pdf.save(`PaintStirringRecords.pdf`);
-};
-}
-function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-(function init(){ 
- const now = new Date(); 
- const today = now.toISOString().slice(0,10);
- const hdrDateEl = document.getElementById('hdr_date');
- if (hdrDateEl) hdrDateEl.value = today; 
- const mm = today.slice(0,7);
- const monthPicker = document.getElementById('monthPicker'); 
- if (monthPicker) monthPicker.value = mm; 
- const from = new Date(now.getFullYear(), now.getMonth(), 1); 
- const to = new Date(now.getFullYear(), now.getMonth()+1, 0); 
- document.getElementById('fromDate').value = from.toISOString().slice(0,10); 
- document.getElementById('toDate').value = to.toISOString().slice(0,10); 
- //try { getLocation(); } catch(e){ console.warn('getLocation() failed to start', e); }
- updateNavInputs(); 
-})();
-</script>
+    loadBtn.addEventListener('click', loadDataFromAPI);
+    /* Attach search functionality (menuSearch) */
+    if (menuSearch) { menuSearch.addEventListener('keyup', function () { const q = this.value.toLowerCase(); const table = document.getElementById('dataTable'); if (!table) return; const rows = table.querySelectorAll('tbody tr'); rows.forEach(r => { const text = r.innerText.toLowerCase(); r.style.display = text.includes(q) ? '' : 'none'; }); }); }
+    if (menuSearchBtn) { menuSearchBtn.addEventListener('click', function () { if (menuSearch) menuSearch.dispatchEvent(new Event('keyup')); }); }
+    /* Export handlers for range */
+    exportExcelBtn.addEventListener('click', () => {
+      const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate) { alert('Select From & To dates'); return; }
+      const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
+      if (!entries.length) { alert('No records in range'); return; }
+      exportEntriesToExcel(entries, `${fromDate}_to_${toDate}`);
+    });
+    exportPDFBtn.addEventListener('click', () => {
+      const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate) { alert('Select From & To dates'); return; }
+      const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
+      if (!entries.length) { alert('No records in range'); return; }
+      exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
+    });
+    function exportEntriesToExcel(entries, filenamePrefix) {
+      const aoa = [];
+      aoa.push(["Sri Sai Markers & Engravers"]);
+      aoa.push(["Paint Stirring Sheet"]);
+      aoa.push([]);
+      const table = document.getElementById("dataTable");
+      if (!table) return alert("No table available!");
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      const wsTable = XLSX.utils.table_to_sheet(table);
+      XLSX.utils.sheet_add_json(ws, XLSX.utils.sheet_to_json(wsTable), { origin: -1 });
+      XLSX.utils.book_append_sheet(wb, ws, "Paint Stirring Records");
+      XLSX.writeFile(wb, `PaintStirringRecords.xlsx`);
+    }
+    function exportEntriesToPDF(filenamePrefix) {
+      const table = document.getElementById("dataTable");
+      if (!table) return alert("No table available!");
+      const headers = [];
+      table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
+      const body = [];
+      table.querySelectorAll("tbody tr").forEach(tr => {
+        const row = [];
+        tr.querySelectorAll("td").forEach(td => row.push(td.innerText));
+        body.push(row);
+      });
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("l", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 8;
+      const boxX = margin;
+      const boxY = margin;
+      const boxWidth = pageWidth - margin * 2;
+      const boxHeight = pageHeight - margin * 2;
+      pdf.setDrawColor(0);
+      pdf.setLineWidth(0.5);
+      pdf.rect(boxX, boxY, boxWidth, boxHeight);
+      const logo = new Image();
+      logo.src = "/static/logo.png";
+      logo.onload = function () {
+        const imgWidth = 18;
+        const imgHeight = 18;
+        const imgX = boxX + 5;
+        const imgY = boxY + 5;
+        pdf.addImage(logo, "PNG", imgX, imgY, imgWidth, imgHeight);
+        pdf.setFontSize(16);
+        pdf.text("Sri Sai Markers & Engravers", pageWidth / 2, boxY + 10, { align: "center" });
+        pdf.setFontSize(10);
+        pdf.text("Paint Stirring ", pageWidth / 2, boxY + 18, { align: "center" });
+        pdf.autoTable({
+          startY: boxY + 25,
+          head: [headers],
+          body: body,
+          styles: { fontSize: 8 },
+          headStyles: { fillColor: [43, 110, 163], textColor: 255 },
+          theme: "grid",
+          margin: { left: boxX + 2, right: margin + 2 },
+        });
+        pdf.save(`PaintStirringRecords.pdf`);
+      };
+    }
+    function escapeHtml(s) { if (s === null || s === undefined) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    (function init() {
+      const now = new Date();
+      const today = now.toISOString().slice(0, 10);
+      const hdrDateEl = document.getElementById('hdr_date');
+      if (hdrDateEl) hdrDateEl.value = today;
+      const mm = today.slice(0, 7);
+      const monthPicker = document.getElementById('monthPicker');
+      if (monthPicker) monthPicker.value = mm;
+      const from = new Date(now.getFullYear(), now.getMonth(), 1);
+      const to = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      document.getElementById('fromDate').value = from.toISOString().slice(0, 10);
+      document.getElementById('toDate').value = to.toISOString().slice(0, 10);
+      //try { getLocation(); } catch(e){ console.warn('getLocation() failed to start', e); }
+      updateNavInputs();
+    })();
+  </script>
 </body>
+
 </html>

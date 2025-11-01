@@ -46,6 +46,10 @@
   table{ width:100%; border-collapse:collapse; margin-top:12px; }
   th, td{ border:1px solid #e1eefb; padding:8px; text-align:left; font-size:13px; vertical-align:middle; }
   th{ background:#f4fbff; color:var(--blue); font-weight:800; }
+  #revisionTableTemplate {width: 100%;border-collapse: collapse;font-family: Arial, sans-serif;border: 1px solid #333;}
+  #revisionTableTemplate td {border: 1px solid #666;padding: 8px 10px;text-align: left;}
+  .rev-history-header td {background-color: #eee;font-weight: bold;color: #333;text-align: center;}
+  #revisionTableTemplate tbody tr:hover {background-color: #f5f5f5;}
   @media (max-width:980px){ .form-grid{ grid-template-columns: repeat(2, 1fr); } .entry-row{ flex-wrap:wrap; } }
   @media (max-width:600px){ .form-grid{ grid-template-columns: 1fr; } .entry-row{ flex-direction:column; align-items:stretch; } }
 </style>
@@ -108,6 +112,83 @@
       <div class="small">No data loaded.</div>
     </div>
   </div>
+  <!--PDF Format --------------------------------->
+  <div id="pdfTemplate" style="display: none;">
+    <div class="form-container" id="formContainer">
+        <header>
+            <div class="header-left">
+                <div class="logo-placeholder">
+                    <img src="/static/logo.png" alt="Company Logo" style="height: 58px; width: 58px; vertical-align: middle;">
+                </div>
+                <h1>SRI SAI MARKERS & ENGRAVERS</h1>
+                <h2>BUFFING PRODUCTION SHEET</h2>
+            </div>
+            <div class="header-right">
+                <p>Format No:- F-SSME-22</p>
+                <p>Revision No:- 00</p>
+                <p>Issue Date:- 24.09.2019</p>
+                <p>Rev Date:- -</p>
+            </div>
+        </header>
+        
+        <table class="production-sheet" id="productionSheet">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                    <td rowspan="2">Date</td>
+                    <td rowspan="2">Part Code</td>
+                    <td rowspan="2">Part Description</td>
+                    <td rowspan="2">Lot Qty</td>
+                    <td rowspan="2">OK Qty</td>
+                    <td rowspan="2">NG Qty</td> 
+                    <td rowspan="2">Reason for NG</td>
+                    <td rowspan="2">Operator</td>
+                    <td rowspan="2">Incharge</td>
+                    <td rowspan="2">Remark</td>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+        </div>
+    <div id="revisionHistoryTemplate">
+      <table id="revisionTableTemplate">
+        <thead>
+          <tr class="rev-history-header">
+            <td>S No. </td>
+            <td>Amendment. </td>
+            <td>Rev No. </td>
+            <td>Rev Date </td>
+            <td>Prepared By </td>
+            <td>Approved By </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="rev-histroy">
+            <td>1</td>
+            <td>New Release</td>
+            <td>00</td>
+            <td>-</td>
+            <td>Chandni</td>
+            <td>Deepak Verma</td>
+          </tr>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <!-------------------------------------------------------------------------------->
 </div>
 <script>
 const STORAGE_KEY = 'buffing_records_v2_fixed';
@@ -278,53 +359,89 @@ function exportEntriesToExcel(entries, filenamePrefix) {
   XLSX.utils.book_append_sheet(wb, ws, "Buffing Records");
   XLSX.writeFile(wb, `BuffingRecords.xlsx`);
 }
-function exportEntriesToPDF(filenamePrefix) {
-  const table = document.getElementById("dataTable");
-  if (!table) return alert("No table available!");
-  const headers = [];
-  table.querySelectorAll("thead th").forEach(th => headers.push(th.innerText));
-  const body = [];
-  table.querySelectorAll("tbody tr").forEach(tr => {
-    const row = [];
-    tr.querySelectorAll("td").forEach(td => row.push(td.innerText));
-    body.push(row);
-  });
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("l", "mm", "a4");
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 8;
-  const boxX = margin;
-  const boxY = margin;
-  const boxWidth = pageWidth - margin * 2;
-  const boxHeight = pageHeight - margin * 2;
-  pdf.setDrawColor(0); 
-  pdf.setLineWidth(0.5);
-  pdf.rect(boxX, boxY, boxWidth, boxHeight);
-  const logo = new Image();
-  logo.src = "/static/logo.png"; 
-  logo.onload = function () {
-    const imgWidth = 18;
-    const imgHeight = 18;
-    const imgX = boxX + 5;
-    const imgY = boxY + 5;
-  pdf.addImage(logo, "PNG", imgX, imgY, imgWidth, imgHeight);
-  pdf.setFontSize(16);
-  pdf.text("Sri Sai Markers & Engravers", pageWidth / 2, boxY + 10, { align: "center" });
-  pdf.setFontSize(10);
-  pdf.text("Buffing Production Sheet", pageWidth / 2, boxY + 18, { align: "center" });
-  pdf.autoTable({
-    startY: boxY + 25,
-    head: [headers],
-    body: body,
-    styles: { fontSize: 8 },
-    headStyles: { fillColor: [43, 110, 163], textColor: 255 },
-    theme: "grid",
-    margin: { left: boxX + 2, right: margin + 2 },
-  });
-  pdf.save(`BuffingRecords.pdf`);
-};
-}
+/*New exportEntriesToPDF---------------------------------------------------*/
+async function exportEntriesToPDF(filenamePrefix) {
+            const { jsPDF } = window.jspdf;
+            const dataTable = document.getElementById("dataTable");
+            const mainTemplateTable = document.getElementById("productionSheet");
+            const revisionTableElement = document.getElementById("revisionTableTemplate"); 
+            if (!mainTemplateTable || !dataTable || !revisionTableElement) {
+                console.error("Required HTML elements are missing: #productionSheet, #dataTable, or #revisionTableTemplate.");
+                return alert("Error: PDF are not generated before Clicking the Load Data Button.");
+            }
+            const dataBodyRows = Array.from(dataTable.querySelectorAll("tbody tr"));
+            const templateTbody = mainTemplateTable.querySelector('tbody');
+            templateTbody.innerHTML = '';
+            dataBodyRows.forEach(row => {
+                templateTbody.appendChild(row.cloneNode(true));
+            });
+            const pdf = new jsPDF("l", "mm", "a4");
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const margin = 2;
+            const boxX = margin;
+            const boxWidth = pageWidth - margin * 2;
+            const HEADER_HEIGHT = 25; 
+            const FOOTER_REVISION_HEIGHT = 40; 
+            const logoPromise = new Promise((resolve) => {
+                const logo = new Image();
+                logo.src = "/static/logo.png";
+                logo.onerror = () => resolve(null);
+                logo.onload = () => resolve(logo);
+                if (logo.complete) resolve(logo);
+            });
+            const logo = await logoPromise;
+            const addCustomHeader = () => {
+                pdf.setDrawColor(0);
+                pdf.setLineWidth(0.5);
+                pdf.rect(boxX, margin, boxWidth, pageHeight - margin * 2);
+                if (logo) {
+                    pdf.addImage(logo, "PNG", boxX + 5, margin + 2, 18, 18);
+                }
+                pdf.setFontSize(15);
+                pdf.setFont("helvetica", "bold");
+                pdf.text("SRI SAI MARKERS & ENGRAVERS", pageWidth / 2, margin + 8, { align: "center" });
+                pdf.setFontSize(9);
+                pdf.setFont("helvetica", "bold");
+                pdf.text("BUFFING PRODUCTION SHEET", pageWidth / 2, margin + 16, { align: "center" });
+                pdf.setFontSize(7);
+                pdf.setFont("helvetica", "bold");
+                pdf.text(`Format No.:- F-SSME-22`, boxX + boxWidth - 2, margin + 6, { align: "right" });
+                pdf.text(`Revision No.:- 00`, boxX + boxWidth - 2, margin + 10, { align: "right" });
+                pdf.text(`Issue Date :- 24.09.2019`, boxX + boxWidth - 2, margin + 14, { align: "right" });
+                pdf.text(`Rev Date :- -`, boxX + boxWidth - 2, margin + 18, { align: "right" });
+            };
+            const addRevisionFooter = () => {
+                const footerY = pageHeight - FOOTER_REVISION_HEIGHT; 
+                pdf.autoTable({
+                    html: revisionTableElement,
+                    startY: footerY,
+                    styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
+                    headStyles: { fillColor: [255, 255, 255], textColor: 0, fontStyle: 'bold' },
+                    bodyStyles: { minCellHeight: 6, valign: 'middle' },
+                    theme: "grid",
+                    margin: { left: boxX + 1, right: margin + 1 }, 
+                    didDrawPage: () => {} 
+                });
+            };
+            pdf.autoTable({
+                html: mainTemplateTable,
+                startY: margin + HEADER_HEIGHT,
+                styles: { fontSize: 7, lineColor: [0, 0, 0], lineWidth: 0.1 },
+                headStyles: { fillColor: [43, 110, 163], textColor: 255, fontStyle: 'bold' },
+                bodyStyles: { minCellHeight: 6 },
+                theme: "grid",
+                didDrawPage: (data) => {
+                    addCustomHeader();
+                    addRevisionFooter();
+                },
+                pageBreak: 'auto',
+                margin: { bottom: 0, left: boxX + 1, right: margin + 1 }
+            });
+            templateTbody.innerHTML = '';
+            pdf.save(`BuffingRecords.pdf`);
+        }
+        /*----------------------------------------------------*/
 function escapeHtml(s){ if (s === null || s === undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 (function init(){ 
  const now = new Date(); 

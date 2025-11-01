@@ -47,7 +47,7 @@
   <header class="topbar" role="banner">
     <div class="top-left">
       <div class="company">SRI SAI</div>
-      <div class="erp-menu">Plot No- 71</div>
+      <div class="erp-menu" id="displayLocation">Plot No-71</div>
     </div>
     <div class="top-center">
       <div class="menu-title">Reporting</div>
@@ -68,6 +68,7 @@
     </div>
   </header>
   <div class="panel-wrap">
+    <input id="hdr_location" type="hidden">
     <div class="panel" role="main" aria-labelledby="menus">
       <div class="button-row" id="menus">
         <button class="btn-custom">Favorites</button>
@@ -146,6 +147,72 @@
         }
       });
     });
+    function getLocation() {
+            const locationDisplay = document.getElementById('displayLocation');
+            const locationInput = document.getElementById('hdr_location');
+            const TARGET_LOCATIONS = [
+                { name: "Plot No- 71", lat: 28.4491776, lon: 77.053952 },
+                { name: "Plot No- 545", lat: 30.7333, lon: 76.7794 }, 
+                { name: "Aastha", lat: 18.5204, lon: 73.8567 }    
+            ];
+            const GPS_TOLERANCE_KM = 1.0; 
+            if (locationDisplay) locationDisplay.textContent = "Getting GPS...";
+            if (locationInput) locationInput.value = "";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+                let foundLocation = "Unknown Location";
+                console.log(`User Coords: Lat ${userLat}, Lon ${userLon}`);
+                function getDistance(lat1, lon1, lat2, lon2) {
+                    const R = 6371;
+                    const dLat = (lat2 - lat1) * Math.PI / 180;
+                    const dLon = (lon2 - lon1) * Math.PI / 180;
+                    const a = 0.5 - Math.cos(dLat)/2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * (0.5 - Math.cos(dLon)/2);
+                    return R * 2 * Math.asin(Math.sqrt(a));
+                }
+                for (const target of TARGET_LOCATIONS) {
+                    const distance = getDistance(userLat, userLon, target.lat, target.lon);
+                    console.log(`Distance to ${target.name}: ${distance.toFixed(3)} km`);
+                    if (distance <= GPS_TOLERANCE_KM) {
+                        foundLocation = target.name;
+                        break;
+                    }
+                }
+                const locationText = foundLocation;
+                if (locationDisplay) locationDisplay.textContent = locationText;
+                if (locationInput) locationInput.value = locationText;
+            },
+            (error) => {
+                const errorText = "Location Denied";
+                if (locationDisplay) locationDisplay.textContent = errorText;
+                if (locationInput) locationInput.value = errorText;
+                console.error("Geolocation Error:", error.message);
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } 
+        );
+    } else {
+        const errorText = "Geo Not Supported";
+        if (locationDisplay) locationDisplay.textContent = errorText;
+        if (locationInput) locationInput.value = errorText;
+    }
+}
+    (function init(){ 
+    const now = new Date(); 
+    const today = now.toISOString().slice(0,10);
+    const hdrDateEl = document.getElementById('hdr_date');
+    if (hdrDateEl) hdrDateEl.value = today; 
+    const mm = today.slice(0,7);
+    const monthPicker = document.getElementById('monthPicker'); 
+    if (monthPicker) monthPicker.value = mm; 
+    const from = new Date(now.getFullYear(), now.getMonth(), 1); 
+    const to = new Date(now.getFullYear(), now.getMonth()+1, 0); 
+    document.getElementById('fromDate').value = from.toISOString().slice(0,10); 
+    document.getElementById('toDate').value = to.toISOString().slice(0,10); 
+    try { getLocation(); } catch(e){ console.warn('getLocation() failed to start', e); }
+    updateNavInputs(); 
+})();
   </script>
 </body>
 </html>

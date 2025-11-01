@@ -78,4 +78,4 @@ class PaintStirringEntry(models.Model):
     remarks = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.date} - {self.paint_type} ({self.batch_number})"
+        return f"{self.date} - {self.paint_name} ({self.batch_code})"

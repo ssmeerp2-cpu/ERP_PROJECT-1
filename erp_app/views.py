@@ -15,23 +15,35 @@ from .api.serializers import PaintStirringEntrySerializer
 def reporting(request):
     return render(request, 'Reporting.html')
 
+
 def testing1_view(request):
     if request.method == 'GET':
         return render(request, 'testing1.html')
 
-def api_entries_view(request):
-    if request.method == 'GET':
-        entries = PainterEntry.objects.all()
-        serializer = PainterEntrySerializer(entries, many=True)
-        return JsonResponse(serializer.data, safe=False)
+@api_view(["GET", "POST", "PUT"])  # Add this decorator
 
-    elif request.method == 'POST':
-        data = request.POST
-        serializer = PainterEntrySerializer(data=data)
+def api_entries_view(request, pk=None):  # Add pk parameter for updates
+    if request.method == "GET":
+        if pk:  # If ID is provided, return a single entry
+            entry = get_object_or_404(PainterEntry, pk=pk)
+            serializer = PainterEntrySerializer(entry)
+            return Response(serializer.data)
+        entries = PainterEntry.objects.all().order_by("-date")  # Add ordering like other views
+        serializer = PainterEntrySerializer(entries, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = PainterEntrySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "PUT":  # Add this for updates
+        entry = get_object_or_404(PainterEntry, pk=pk)
+        serializer = PainterEntrySerializer(entry, data=request.data, partial=True)  # partial=True allows partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def buffing_page(request):
     return render(request, "buffing_production.html")
