@@ -1,3 +1,6 @@
+import datetime
+
+import django
 from django.db import models
 
 class PainterEntry(models.Model):
@@ -55,8 +58,8 @@ class MaskingEntry(models.Model):
     reject_qty = models.IntegerField()
     defect = models.TextField(blank=True, null=True)
     judgement = models.CharField(max_length=10)
-    prepared_by = models.CharField(max_length=100)
-    verify_by = models.CharField(max_length=100)
+    prepared_by = models.CharField(max_length=100,default="")
+    verify_by = models.CharField(max_length=100,default="")
 
     def __str__(self):
         return f"{self.date} - {self.item_description} ({self.prepared_by})"
@@ -68,13 +71,15 @@ class PaintStirringEntry(models.Model):
     batch_code = models.CharField(max_length=100)
     pkg_size = models.CharField(max_length=50)
     pkg_references= models.CharField(max_length=100)
-    expry_date = models.DateField()
+    expiry_date = models.DateTimeField(default=datetime.datetime.now(
+        tz=datetime.timezone.utc,
+    ))
     air_pressure = models.FloatField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    done_by = models.CharField(max_length=100)
-    judgement = models.CharField(max_length=10)
-    verify_by = models.CharField(max_length=100)
+    done_by = models.CharField(max_length=100,default="")
+    judgement = models.CharField(max_length=10,default="")
+    verify_by = models.CharField(max_length=100,default="")
     remarks = models.TextField(blank=True, null=True)
 
     def __str__(self):

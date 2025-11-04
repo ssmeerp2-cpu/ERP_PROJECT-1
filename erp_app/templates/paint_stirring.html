@@ -463,7 +463,7 @@
           paint_code: headerPaintCode,
           batch_code: headerBatchCode,
           pkg_size: parseInt(inputs[i++].value) || 0,
-          pkg_refrence: parseInt(inputs[i++].value) || 0,
+          pkg_references: parseInt(inputs[i++].value) || 0,
           expiry_date: new Date(inputs[i++].value),
           air_pressure: parseFloat(inputs[i++].value) || 0,
           start_time: inputs[i++].value || '00:00',
@@ -495,9 +495,11 @@
     function buildTableHtml(entries) {
       if (!entries.length) return '<div class="small">No records.</div>';
       let html = '<table id="dataTable"><thead><tr>';
+
+      // FIX 3: Corrected 'pkg_refrence' typo to 'pkg_references'
       const heads = [
         'Date', 'paint_name', 'paint_code', 'batch_code',
-        'pkg_size', 'pkg_refrence', 'expiry_date', 'air_pressure',
+        'pkg_size', 'pkg_references', 'expiry_date', 'air_pressure',
         'start_time', 'end_time', 'done_by', 'judgement', 'verify_by', 'remarks'
       ];
       heads.forEach(h => html += `<th>${escapeHtml(h)}</th>`);
@@ -505,14 +507,17 @@
 
       entries.forEach(en => {
         html += '<tr>';
+
+        // FIX 2: Added .slice(0, 10) to format dates as YYYY-MM-DD
+        // FIX 3: Corrected 'en.pkg_refrence' to 'en.pkg_references'
         const row = [
-          en.date || '',
+          (en.date || '').slice(0, 10),
           en.paint_name || '',
           en.paint_code || '',
           en.batch_code || '',
           en.pkg_size || '',
-          en.pkg_refrence || '',
-          en.expiry_date || '',
+          en.pkg_references || '', // <-- Was 'en.pkg_refrence'
+          (en.expiry_date || '').slice(0, 10),
           en.air_pressure || '',
           en.start_time || '',
           en.end_time || '',
@@ -535,6 +540,7 @@
         let res = await fetch("/api/paint-stirring-entries/");
         if (!res.ok) throw new Error("API call failed with status: " + res.status);
         let data = await res.json();
+        console.log(data);
         let filtered = data.filter(e => e.date >= fromDate && e.date <= toDate);
         document.getElementById('monthResult').innerHTML = buildTableHtml(filtered);
       } catch (err) {
@@ -548,16 +554,33 @@
     if (menuSearchBtn) { menuSearchBtn.addEventListener('click', function () { if (menuSearch) menuSearch.dispatchEvent(new Event('keyup')); }); }
     /* Export handlers for range */
     exportExcelBtn.addEventListener('click', () => {
-      const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate) { alert('Select From & To dates'); return; }
-      const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
-      if (!entries.length) { alert('No records in range'); return; }
-      exportEntriesToExcel(entries, `${fromDate}_to_${toDate}`);
+      // FIX: Check if the HTML table exists, not localStorage
+      const table = document.getElementById("dataTable");
+      if (!table) {
+        alert("No data loaded. Please click 'Load Data' first.");
+        return;
+      }
+
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      // Your exportEntriesToExcel function already reads from "dataTable",
+      // so we just need to call it. The first argument is unused.
+      exportEntriesToExcel(null, `${fromDate}_to_${toDate}`);
     });
+
     exportPDFBtn.addEventListener('click', () => {
-      const fromDate = document.getElementById('fromDate').value; const toDate = document.getElementById('toDate').value; if (!fromDate || !toDate) { alert('Select From & To dates'); return; }
-      const entries = readEntriesFromStorage().filter(e => e.date && e.date >= fromDate && e.date <= toDate);
-      if (!entries.length) { alert('No records in range'); return; }
-      exportEntriesToPDF(entries, `${fromDate}_to_${toDate}`);
+      // FIX: Check if the HTML table exists, not localStorage
+      const table = document.getElementById("dataTable");
+      if (!table) {
+        alert("No data loaded. Please click 'Load Data' first.");
+        return;
+      }
+
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      // Your exportEntriesToPDF function already reads from "dataTable"
+      // and takes the filename as its first argument.
+      exportEntriesToPDF(`${fromDate}_to_${toDate}`);
     });
     function exportEntriesToExcel(entries, filenamePrefix) {
       const aoa = [];
